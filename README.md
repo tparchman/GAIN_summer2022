@@ -17,7 +17,15 @@ Last year we introduced basic computational tools, focusing on Unix and Python, 
 ## Student Learning Outcomes
 By the end of the module, students should have learned enough to feel enabled and motivated to learn more about the concepts we covered. 
 
-Specific Student Learning Outcomes:
+Topics we will explore/introduce this week:
+
+- Basic understanding of using markdown in R to organize code and visualize results
+
+- Introduction to data visualization using ggplot2 in R
+
+- Overview of High Performance Computing (HPC), with introduction to UNR HPC resources
+
+- Job opportunities outside of academica
 
 
 ## Required Materials
@@ -28,20 +36,20 @@ Specific Student Learning Outcomes:
 
 - **Installed text editor with syntax recognition** Students should have installed a text editor that will recognize syntax from code written for Unix, Python, Perl, etc. We suggest BBedit (for mac users), Visual Studio Code, or Sublime. All are free and easy to locate, download, and install.
 
-- **Supplemental primers, readings and assignments** are provided on the [workshop github page](https://github.com/tparchman/GAIN_summer2021).
+- **Supplemental primers, readings and assignments** are provided on the [workshop github page](https://github.com/tparchman/GAIN_summer2022).
+
+- **Rstudio installed, for enhanced use of Rmd** [Rstudio download and install](https://www.rstudio.com/products/rstudio/)
 
 ### Suggested for more in depth learning
 * **Practical computing for biologists** Haddock, S.H.D. and Dunn, C.W., 2011. Sunderland, MA, USA: Sinauer Associates. The book is very useful for both Unix and Python.
 
 ## Workshop Format
-We will meet from 9:00-12:00 each weekday morning from August 6th to August 12th. At the beginning of each session, we will introduce new concepts and material that will form the basis of the exercises, assignments, or projects we will work through during that session. We will cover questions regarding current or previous material, and then students will spend at least half of each class working on writing code independently or in small groups. Students will get the most out of each session if they review the primers and outlines of concepts ahead of time. 
+We will meet from 9:00-10:45 the mornings of Aug 1, 2, 4, and 5. At the beginning of each session, we will introduce new concepts and material that will form the basis of the exercises/tutorials we will work through during that session. We will cover questions regarding current or previous material, and then students will spend at least half of each class working on writing code independently or in small groups. Students will get the most out of each session if they review the primers and outlines of concepts ahead of time. 
 
-
-*MAYBE* As the module will be remote this session, we will hold our meetings over zoom. I will send a link to all participants each morning prior to starting.
 
 ## Workshop Material Organization
 
-The material for each day of the workshop will be organized in separate directories on [workshop github page](https://github.com/tparchman/GAIN_summer2021). Each of these directories will contain the slides that we will use to introduce material, a primer covering example Unix and Python code along with explanations, and a worksheet of programming practice exercises. There are also general directories on the repository with supplementary resources for Unix and Python, including cheat sheets, tutorials, and recommended resources for learning more.
+The material for each day of the workshop will be organized in separate directories on [workshop github page](https://github.com/tparchman/GAIN_summer2022). Each of these directories will contain the slides that we will use to introduce material, a primer covering example Unix and Python code along with explanations, and a worksheet of programming practice exercises. There are also general directories on the repository with supplementary resources for R markdown, data visualization, and HPC systems, including cheat sheets, tutorials, and recommended resources for learning more.
 
 ### Downloading material from github using `git`
 
@@ -52,19 +60,18 @@ For this course, downloading individual files might suffice. But if you would li
 **hint:** make a directory somewhere on your computer for this workshop. Run below command in that directory.
 
 ```
-git clone https://github.com/tparchman/GAIN_summer2021
+git clone https://github.com/tparchman/GAIN_summer2022
 ```
 
 ## Workshop Schedule
-*Tentative Workshop Schedule. All contents are subject to change.
+**Tentative Workshop Schedule. All contents are subject to change.**
 
 | Date    |  Topic          |  Assignment |
 | --------- | ---------------| -------------| 
-| Aug. 6  | Intro, Unix    | Unix assignments  | 
-| Aug. 9  |	Python I | python1_practice_scripts.md |
-| Aug. 10  |	Python II	   | python2_practice_scripts.md |
-| Aug. 11  |	Python	III   | python3_practice_scripts.md |
-| Aug. 12  |	Python	IV   | python4_practice_scripts.md | 
+| Aug. 1  | R markdown    | Tutorial  | 
+| Aug. 2  |	Data Visualization | ggplot2 R tutorial |
+| Aug. 4  |	HPC | Discussion |
+| Aug. 5  |	Life outside of Academia   | Questions for Dr. Johan Grahnen |
 | --------- | ---------------| --------------------------------| 
 |
 
