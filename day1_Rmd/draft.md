@@ -4,7 +4,7 @@
 Markdown is an easy formatting syntax for creating HTML, PDF, and MS Word documents that serve as a neat and reproducible record of your analysis. Thus, other researchers or coworkers can easily understand what you did following your document. You might create an RMarkdown to present the results of a study, for example, or to keep a record of your work so you can quickly look back at your code and remember what you did.
 
 
-### Install an R Markdown:
+### Install R Markdown:
 
 1. The first thing you have to do is Open RStudio.
 
@@ -150,16 +150,37 @@ Download this [Image](https://upload.wikimedia.org/wikipedia/commons/5/5c/Planta
 ```
 <img width="1301" alt="texto7" src="https://user-images.githubusercontent.com/79876943/178736131-2b8ca9c8-198c-4261-9a5c-4c98bea16119.png">
 
-### Including Tables
+### Tables:
 
----
+* **You can include a Table from your own directory:**
+For example, download this in ".csv" format. We are going to read the document from our computer. 
+Bla bla bla....
 
-### Including code chunks
+Copy the below code and Knit:
 
----
+```{r echo=FALSE, message=FALSE, warning=FALSE,out.width='20%', fig.align="center"}
+library(knitr)
+continent <- read.csv("prueba.csv", sep = ";")
+kable(continent, digits = 2)
+```
+
+* **You can also manually create small tables using markdown syntax:**
+This should be put outside of any code chunks.
+The :-----: tells markdown that the line above should be treated as a header and the lines below should be treated as the body of the table. Text alignment of the columns is set by the position of ::
 
 
-### Running code 
+For example copy and paste this and Knit:
+
+| XX | XXX | XXX |
+|:------|:-----:|-------:|
+| lo que sea 1   | 20    | 0.65   |
+| lo que sea 2    | 20    | 0.95   |
+| lo que sea 3    | 20    | 0.15   |
+
+
+
+### Including code chunk: 
+
 
 ---
 
