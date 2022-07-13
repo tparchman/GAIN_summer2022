@@ -71,6 +71,8 @@ Copy the following text and Knit again to see the results:
 The snow star or Plantago nivalis is a non-endangered endemic plant of Sierra Nevada (Spain), which grows exclusively above 3,000 m. 
 It is considered a symbol of these Mountains. It is a species that, although it is maintained from the beginning of the thaw until the low temperatures return after the summer, can only be seen in bloom for a few days since its flowers are very brief. They grow on long stems that start from the inside of the fleshy star-shaped rosette. They are clusters of tiny yellow flowers, with the usual form in the genus Plantago.
 ```
+<img width="1252" alt="texto2" src="https://user-images.githubusercontent.com/79876943/178736445-d31d1b72-2d51-43d5-ba4b-36c97e790ecc.png">
+
 
 **Paragraph Breaks and Forced Line Breaks:**
 
