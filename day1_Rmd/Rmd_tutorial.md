@@ -51,7 +51,7 @@ Now that we have our first piece of content, we can test the .Rmd file by compil
 
 ## Markdown syntax:
 
-RMarkdown makes use of Markdown syntax. Markdown is a straightforward 'markup' language that provides methods for creating documents with headers, images added, links, etc. We are going to add some text on our document. Copy the text below and Knit as explained above:
+RMarkdown makes use of Markdown syntax. Markdown is a straightforward 'markup' language that provides methods for creating documents with headers, images added, links, etc. We are going to add some text to our document. Copy the text below and Knit as explained above:
 
 ```{r eval=FALSE}
 The snow star or Plantago nivalis is a non-endangered endemic plant of Sierra Nevada (Spain), which grows exclusively above 3,000 m. 
@@ -135,29 +135,27 @@ Press [here](https://en.wikipedia.org/wiki/Plantago_nivalis) to know more
 
 ## Images:
 
-Images begin with an exclamation mark, then the text to use, and then either the file address of the Image (in the same directory as your document) or a URL. Here are two examples, one for an image in the directory and one for a URL.
+Images begin with an exclamation mark, then the text to use, and then either the file address of the Image (in the same directory as your document) or a URL. Here are two examples, one for an Image in the directory and one for a URL.
 
-* **Insert an image from your computer:**
+* **Insert an Image from your computer:**
 
 Download this [Image](https://upload.wikimedia.org/wikipedia/commons/5/5c/Plantago_nivalis_flower.JPG) and save it on your computer. Then, copy the path where the Image it saved (for example: /home/Desktop/image.jpg) and copy this path in the code below:
 
 ```{r eval=FALSE}
-![A local image](/the path where the picture is/image.jpg)
+![A local Image](/the path where the picture is/image.jpg)
 ```
 
-* **Insert an image from an URL:**
+* **Insert an Image from an URL:**
 ```{r eval=FALSE}
-![A remote image](http://www.florasilvestre.es/mediterranea/Plantaginaceae/Plantago_nivalis.jpg)
+![A remote Image](http://www.florasilvestre.es/mediterranea/Plantaginaceae/Plantago_nivalis.jpg)
 ```
 <img width="1283" alt="texto7" src="https://user-images.githubusercontent.com/79876943/178951802-ec27ffd4-4e87-44e8-aef1-718ff8fdb671.png">
 
 
-* **Resize the images:**
-You can control the size of the images by modifying width and height; you can resize the image to 75%, 50%, 25% of whatever size needed, adding the following text to the image: {#id .class width=100% height=100%}
+* **Resize the Images:**
+You can control the size of the Images by modifying width and height; you can resize the Image to 75%, 50%, 25% of whatever size needed, adding the following text: {#id .class width=100% height=100%}
 
 <img width="1508" alt="texto10" src="https://user-images.githubusercontent.com/79876943/178951832-2caac7ba-07bf-4cde-b613-7025250b6b0b.png">
-
-
 
 
 ## Tables:
@@ -165,7 +163,7 @@ You can control the size of the images by modifying width and height; you can re
 
 * **You can create small tables using markdown syntax:**
 
-For example copy and paste this text and Knit:
+For example, copy and paste this text and Knit:
 
 ```{r eval=FALSE}
 | Plant | Flowers | Altitude |
@@ -190,24 +188,34 @@ The :-----: tells markdown that the line above should be treated as a header and
 
 R Markdown lets you include your code, have the code run automatically when your document is rendered, and include the results of that code in your document. 
 
-The code chunk is preceded by three backwards apostrophes following by {r} on a line by itself, and ended by a line with three backwards apostrophes; like this:
+The code chunk is preceded by three backward apostrophes following by {r} on a line by itself and ended by a line with three backward apostrophes; like this:
 
 <img width="91" alt="texto9" src="https://user-images.githubusercontent.com/79876943/178946885-2faac276-7edb-4640-9f35-5444ed74da8a.png">
 
+You can manually add the code chunk or click here:
 
-Download this [Table]() in ".csv" format. We are going to read the document from our computer, and include the Table in our document.
+<img width="1154" alt="texto12" src="https://user-images.githubusercontent.com/79876943/178969041-1f7d2f6c-da27-4aca-a445-130b3f3d9973.png">
+
+
+Now, download this [Table]() in ".csv" format. We are going to read it from our computer and include the Table in the Rmd document.
 
 Copy the below code inside a code chunk and Knit:
 
-```{r}
+```{r, echo=FALSE}
 install.packages("knitr")
 library(knitr)
-continent <- read.csv("path_to_the_table/flowers_altitude.csv", sep = ";")
-kable(continent, digits = 2)
+data_flowers <- read.csv("path_to_the_table/flowers_altitude.csv", sep = ",")
+kable(data_flowers, digits = 2)
 ```
-You have included the firts chunk of code!
+You have included the Table in your document, and you have also included the first chunk of code!
 
-Then, we are going to explore this dataset
+<img width="1117" alt="texto11" src="https://user-images.githubusercontent.com/79876943/178971983-bc01d483-3329-4465-9a64-6a41a1fbba0f.png">
 
+Here XXXXX:
 
-
+```{r}
+# data <- read.csv("Cosas/prueba.csv", sep = ";")
+# summary(data_flowers)
+# plot(XX ~ XX, data=data_flowers, xlab="Number of flowers", ylab="Altitude")
+```
+XXXXXX
