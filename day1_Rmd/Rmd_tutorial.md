@@ -1,7 +1,7 @@
 
 # R Markdown:
 
-Markdown is an easy formatting syntax for creating HTML, PDF, and MS Word documents that serve as a neat and reproducible record of your analysis. Thus, other researchers or coworkers can easily understand what you did following your document. You might create an RMarkdown to present the results of a study, for example, or to keep a record of your work so you can quickly look back at your code and remember what you did.
+Markdown is an easy formatting syntax for creating HTML, PDF, and Word documents that serve as a neat and reproducible record of your analysis. Thus, other researchers or coworkers can easily understand what you did following your document. You might create an RMarkdown to present the results of a study, for example, or to keep a record of your work so you can quickly look back at your code and remember what you did.
 
 [Here](https://bookdown.org/yihui/rmarkdown-cookbook/), you have the R Markdown Cookbook, with detailed explanations of all its utilities.
 
@@ -41,7 +41,7 @@ output: html_document
 ---
 ```
 
-**You are going to see some code under the YAML section. Please, delete all, as we will add late or own code.** 
+**You are going to see some code under the YAML section. Please, delete all, as we will add late our own code.** 
 
 
 Now that we have our first piece of content, we can test the .Rmd file by compiling it to .html. To compile your .Rmd file into a .html document, you should press the **Knit button in the taskbar**. By default, RStudio opens a separate preview window to display the output of your .Rmd file. A preview appears, and a .html file is also saved to the same folder where you saved your .Rmd file.
@@ -139,7 +139,7 @@ Images begin with an exclamation mark, then the text to use, and then either the
 
 * **Insert an Image from your computer:**
 
-Download this [Image](https://upload.wikimedia.org/wikipedia/commons/5/5c/Plantago_nivalis_flower.JPG) and save it on your computer. Then, copy the path where the Image it saved (for example: /home/Desktop/image.jpg) and copy this path in the code below:
+Download this [Image](https://upload.wikimedia.org/wikipedia/commons/5/5c/Plantago_nivalis_flower.JPG) and save it on your computer. Then, copy the path where the Image is saved (for example: /home/Desktop/image.jpg) and copy this path in the code below:
 
 ```{r eval=FALSE}
 ![A local Image](/the path where the picture is/image.jpg)
@@ -253,6 +253,6 @@ Then, you can see the plot beneath the code chunk:
 
 If you Knit, the results will appear included in the document:
 
-<img width="1099" alt="texto17" src="https://user-images.githubusercontent.com/79876943/179021715-2f9e5f1a-6eac-4952-a4bc-f3da833d77ff.png">
+![last_text](https://user-images.githubusercontent.com/79876943/179031533-2f3895bd-e7c8-4f69-b7fa-abc19bab3987.jpg)
 
 
