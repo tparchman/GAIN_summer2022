@@ -3,8 +3,9 @@
 
 Markdown is an easy formatting syntax for creating HTML, PDF, and MS Word documents that serve as a neat and reproducible record of your analysis. Thus, other researchers or coworkers can easily understand what you did following your document. You might create an RMarkdown to present the results of a study, for example, or to keep a record of your work so you can quickly look back at your code and remember what you did.
 
+[Here](https://bookdown.org/yihui/rmarkdown-cookbook/), you have the R Markdown Cookbook, with detailed explanations of all its utilities.
 
-### Install R Markdown:
+## Install R Markdown:
 
 1. The first thing you have to do is Open RStudio.
 
@@ -15,7 +16,7 @@ install.packages("rmarkdown")
 library(rmarkdown)
 ```
 
-### Create an R Markdown document:
+## Create an R Markdown document:
 
 Go to your Rstudio and open a new R Markdown document:
 
@@ -27,7 +28,7 @@ A small screen appears, where you can add the document's name, your name, and sp
 <img width="491" alt="2_2" src="https://user-images.githubusercontent.com/79876943/178733511-af6c7a0b-7475-467b-8c04-78ff26a75499.png">
 
 
-### The YAML header:
+## The YAML header:
 
 The first thing you will see in your document is this YAML header section enclosed by ---. This includes the title, author, date, and file type you want to output by default.  You can modify the document details by changing the YAML header section. You can also use the header to tell R Markdown whether you want it to render to HTML (html_document; the default), PDF (pdf_document), or something else. 
 
@@ -48,7 +49,7 @@ Now that we have our first piece of content, we can test the .Rmd file by compil
 <img width="337" alt="3_3" src="https://user-images.githubusercontent.com/79876943/178733671-331dc476-b518-4ca2-9781-e0103f444de2.png">
 
 
-### Markdown syntax:
+## Markdown syntax:
 
 RMarkdown makes use of Markdown syntax. Markdown is a straightforward 'markup' language that provides methods for creating documents with headers, images added, links, etc. We are going to add some text on our document. Copy the text below and Knit as explained above:
 
@@ -58,7 +59,7 @@ It is considered a symbol of these Mountains. It is a species that, although it 
 ```
 <img width="1257" alt="texto1" src="https://user-images.githubusercontent.com/79876943/178735918-4cfed9ea-345b-402f-84c7-63a6dd4ffc3a.png">
 
-**Headers:**
+###  **Headers:**
 
 * The character # at the beginning of a line means that the rest of the line is interpreted as a section header. The number of #s at the beginning of the line indicates whether it is treated as a section, sub-section, sub-sub-section, etc., of the document. You can control the size of the headers by adding more #'s. 
 
@@ -74,7 +75,7 @@ It is considered a symbol of these Mountains. It is a species that, although it 
 <img width="1252" alt="texto2" src="https://user-images.githubusercontent.com/79876943/178736445-d31d1b72-2d51-43d5-ba4b-36c97e790ecc.png">
 
 
-**Paragraph Breaks and Forced Line Breaks:**
+###  **Paragraph Breaks and Forced Line Breaks:**
 
 * Include a single completely blank line to insert a break between sentences/paragraphs.
 
@@ -88,7 +89,7 @@ It is considered a symbol of these Mountains. It is a species that, although it 
 ```
 <img width="1238" alt="texto3" src="https://user-images.githubusercontent.com/79876943/178735995-7a388d48-6a29-41e5-bafb-34371595bfaa.png">
 
-**Italics, Boldface:**
+###  **Italics, Boldface:**
 
 * Text to be italicized goes inside a single set of underscores or asterisks.
 * Text to be boldfaced goes inside a double set of underscores or asterisks.
@@ -105,7 +106,7 @@ It is considered a symbol of these Mountains. It is a species that, although it 
 ```
 <img width="1220" alt="texto4" src="https://user-images.githubusercontent.com/79876943/178736054-2b5885fd-c67c-4b3c-80af-3c09e18cd27f.png">
 
-**List item:**
+###  **List item:**
 
 * Add an ordered (with a number and a period; for example, 1.) or a pointed list item (adding an asterisk). 
 
@@ -122,7 +123,7 @@ Copy and Knit:
 ```
 <img width="1205" alt="texto5" src="https://user-images.githubusercontent.com/79876943/178736077-15223b40-95e6-4795-b2fb-d2a028d48157.png">
 
-**Adding hyperlinks:**
+###  **Adding hyperlinks:**
 
 * Hyperlinks anchored to the text have the anchor in square brackets, then the link in parentheses. Copy and Knit:
 
@@ -132,7 +133,7 @@ Press [here](https://en.wikipedia.org/wiki/Plantago_nivalis) to know more
 <img width="1391" alt="texto6" src="https://user-images.githubusercontent.com/79876943/178736105-c1512b61-4d9f-4156-9535-587e1cd8006c.png">
 
 
-### Images:
+## Images:
 
 Images begin with an exclamation mark, then the text to use, and then either the file address of the Image (in the same directory as your document) or a URL. Here are two examples, one for an image in the directory and one for a URL.
 
@@ -148,39 +149,65 @@ Download this [Image](https://upload.wikimedia.org/wikipedia/commons/5/5c/Planta
 ```{r eval=FALSE}
 ![A remote image](http://www.florasilvestre.es/mediterranea/Plantaginaceae/Plantago_nivalis.jpg)
 ```
-<img width="1301" alt="texto7" src="https://user-images.githubusercontent.com/79876943/178736131-2b8ca9c8-198c-4261-9a5c-4c98bea16119.png">
+<img width="1283" alt="texto7" src="https://user-images.githubusercontent.com/79876943/178951802-ec27ffd4-4e87-44e8-aef1-718ff8fdb671.png">
 
-### Tables:
 
-* **You can include a Table from your own directory:**
-For example, download this in ".csv" format. We are going to read the document from our computer. 
-Bla bla bla....
+* **Resize the images:**
+You can control the size of the images by modifying width and height; you can resize the image to 75%, 50%, 25% of whatever size needed, adding the following text to the image: {#id .class width=100% height=100%}
 
-Copy the below code and Knit:
+<img width="1508" alt="texto10" src="https://user-images.githubusercontent.com/79876943/178951832-2caac7ba-07bf-4cde-b613-7025250b6b0b.png">
 
-```{r echo=FALSE, message=FALSE, warning=FALSE,out.width='20%', fig.align="center"}
+
+
+
+## Tables:
+
+
+* **You can create small tables using markdown syntax:**
+
+For example copy and paste this text and Knit:
+
+```{r eval=FALSE}
+| Plant | Flowers | Altitude |
+|:------|:-----:|-------:|
+| 1     | 2  | 3000   |
+| 2     | 4    | 4000   |
+| 3     | 5    | 5000   |
+```
+<img width="940" alt="texto8" src="https://user-images.githubusercontent.com/79876943/178952364-2e4374dc-5d3d-4757-8ef0-6ec98aca1797.png">
+
+The :-----: tells markdown that the line above should be treated as a header and the lines below should be treated as the body of the table. Text alignment of the columns is set by the position of :
+
+
+| Syntax | Alignment |
+|:------|:-----:|
+| :----:     | Centre | 
+| :-----    | Left    | 
+| -----:    | Right   | 
+| ------    | Auto   | 
+
+## Including code chunk: 
+
+R Markdown lets you include your code, have the code run automatically when your document is rendered, and include the results of that code in your document. 
+
+The code chunk is preceded by three backwards apostrophes following by {r} on a line by itself, and ended by a line with three backwards apostrophes; like this:
+
+<img width="91" alt="texto9" src="https://user-images.githubusercontent.com/79876943/178946885-2faac276-7edb-4640-9f35-5444ed74da8a.png">
+
+
+Download this [Table]() in ".csv" format. We are going to read the document from our computer, and include the Table in our document.
+
+Copy the below code inside a code chunk and Knit:
+
+```{r}
+install.packages("knitr")
 library(knitr)
-continent <- read.csv("prueba.csv", sep = ";")
+continent <- read.csv("path_to_the_table/flowers_altitude.csv", sep = ";")
 kable(continent, digits = 2)
 ```
+You have included the firts chunk of code!
 
-* **You can also manually create small tables using markdown syntax:**
-This should be put outside of any code chunks.
-The :-----: tells markdown that the line above should be treated as a header and the lines below should be treated as the body of the table. Text alignment of the columns is set by the position of ::
-
-
-For example copy and paste this and Knit:
-
-| XX | XXX | XXX |
-|:------|:-----:|-------:|
-| lo que sea 1   | 20    | 0.65   |
-| lo que sea 2    | 20    | 0.95   |
-| lo que sea 3    | 20    | 0.15   |
+Then, we are going to explore this dataset
 
 
-
-### Including code chunk: 
-
-
----
 
