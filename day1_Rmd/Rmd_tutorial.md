@@ -146,6 +146,7 @@ Download this [Image](https://upload.wikimedia.org/wikipedia/commons/5/5c/Planta
 ```
 
 * **Insert an Image from an URL:**
+
 ```{r eval=FALSE}
 ![A remote Image](http://www.florasilvestre.es/mediterranea/Plantaginaceae/Plantago_nivalis.jpg)
 ```
@@ -153,13 +154,13 @@ Download this [Image](https://upload.wikimedia.org/wikipedia/commons/5/5c/Planta
 
 
 * **Resize the Images:**
+
 You can control the size of the Images by modifying width and height; you can resize the Image to 75%, 50%, 25% of whatever size needed, adding the following text: {#id .class width=100% height=100%}
 
 <img width="1508" alt="texto10" src="https://user-images.githubusercontent.com/79876943/178951832-2caac7ba-07bf-4cde-b613-7025250b6b0b.png">
 
 
 ## Tables:
-
 
 * **You can create small tables using markdown syntax:**
 
@@ -199,7 +200,8 @@ You can manually add the code chunk or click here:
 
 Now, download this [Table]() in ".csv" format. We are going to read it from our computer and include the Table in the Rmd document.
 
-Copy the below code inside a code chunk and Knit:
+
+Copy the below code inside a code chunk:
 
 ```{r, echo=FALSE}
 install.packages("knitr")
@@ -207,15 +209,50 @@ library(knitr)
 data_flowers <- read.csv("path_to_the_table/flowers_altitude.csv", sep = ",")
 kable(data_flowers, digits = 2)
 ```
-You have included the Table in your document, and you have also included the first chunk of code!
+
+We do not want to show our code in the Rmd document, so add "echo=FALSE" in the code chunk (like shown below). There are many other instructions that you can give to the code chunk. For example:
+
+ | Instruction | Code to add (default option) | Function |
+|:------|:-----:|-------:|
+| eval    | eval=TRUE  | Is the code and the results included in the output?   |
+| echo  | echo=TRUE    |  Is the code displayed alongside the results?  |
+| warning    |  warning=TRUE   | Are warning messages displayed?   |
+| error    | error=FALSE    | Are error messages displayed?   |
+| fig.width, fig.height	   | fig.width=7	    | What width/height (in inches) are the plots?   |
+| fig.align    | fig.align="left"	 | "left" "right" "center"   |
+
+
+Then, you can run the code, and have the output of the code just beneath the code chunk. Click on the green arrow:
+
+<img width="1207" alt="texto14" src="https://user-images.githubusercontent.com/79876943/179018264-4087fcea-8026-4e3b-b732-08a052a5055d.png">
+
+
+You have also different options for running the code here:
+
+<img width="1102" alt="texto13" src="https://user-images.githubusercontent.com/79876943/179017010-dc105414-ebfd-4deb-98c6-55ab43d967ce.png">
+
+
+If you Knit, you are going to see the Table included in your Rmd document:
 
 <img width="1117" alt="texto11" src="https://user-images.githubusercontent.com/79876943/178971983-bc01d483-3329-4465-9a64-6a41a1fbba0f.png">
 
-Here XXXXX:
+Now, we can explore our data a little bit. Copy and run the below code:
 
 ```{r}
-# data <- read.csv("Cosas/prueba.csv", sep = ";")
 # summary(data_flowers)
-# plot(XX ~ XX, data=data_flowers, xlab="Number of flowers", ylab="Altitude")
+# plot(N_of_flowers ~ Altitude, data=data_flowers, xlab="Number of flowers", ylab="Altitude")
 ```
-XXXXXX
+
+First, the summary function gives you information about the data:
+
+<img width="684" alt="texto15" src="https://user-images.githubusercontent.com/79876943/179021013-a2bd5691-0f80-44ce-87ba-9f4762ce3f3f.png">
+
+Then, you can see the plot beneath the code chunk:
+
+<img width="753" alt="texto16" src="https://user-images.githubusercontent.com/79876943/179021182-bab566e0-89fc-40f1-86b5-5b58264930ea.png">
+
+If you Knit, the results will appear included in the document:
+
+<img width="1099" alt="texto17" src="https://user-images.githubusercontent.com/79876943/179021715-2f9e5f1a-6eac-4952-a4bc-f3da833d77ff.png">
+
+
