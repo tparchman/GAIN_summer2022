@@ -210,19 +210,11 @@ data_flowers <- read.csv("path_to_the_table/flowers_altitude.csv", sep = ",")
 kable(data_flowers, digits = 2)
 ```
 
-We do not want to show our code in the Rmd document, so add "echo=FALSE" in the code chunk (like shown below). There are many other instructions that you can give to the code chunk. For example:
 
- | Instruction | Code to add (default option) | Function |
-|:------|:-----:|-------:|
-| eval    | eval=TRUE  | Is the code and the results included in the output?   |
-| echo  | echo=TRUE    |  Is the code displayed alongside the results?  |
-| warning    |  warning=TRUE   | Are warning messages displayed?   |
-| error    | error=FALSE    | Are error messages displayed?   |
-| fig.width, fig.height	   | fig.width=7	    | What width/height (in inches) are the plots?   |
-| fig.align    | fig.align="left"	 | "left" "right" "center"   |
+We do not want to show our code in the Rmd document, so add **"echo=FALSE"** in the code chunk (as shown below). The code will be evaluated when the Rmd file is knit; however, only the output will be rendered on the output document.
 
 
-Then, you can run the code, and have the output of the code just beneath the code chunk. Click on the green arrow:
+Then, you can run the code and have the output of the code just beneath the code chunk. Click on the green arrow:
 
 <img width="1207" alt="texto14" src="https://user-images.githubusercontent.com/79876943/179018264-4087fcea-8026-4e3b-b732-08a052a5055d.png">
 
@@ -232,9 +224,35 @@ You have also different options for running the code here:
 <img width="1102" alt="texto13" src="https://user-images.githubusercontent.com/79876943/179017010-dc105414-ebfd-4deb-98c6-55ab43d967ce.png">
 
 
-If you Knit, you are going to see the Table included in your Rmd document:
+If you Knit, you are going to see the Table included in your Rmd document, and the code hidden as we set **"echo=FALSE"**:
 
 <img width="1117" alt="texto11" src="https://user-images.githubusercontent.com/79876943/178971983-bc01d483-3329-4465-9a64-6a41a1fbba0f.png">
+
+
+ #### There are many other instructions that you can give to the code chunk. For example:
+
+ | Instruction | Code to add (default option) | Function |
+|:------|:-----:|-------:|
+| echo    | echo=TRUE   | Whether to echo the source code in the output document  |
+| eval    | eval=TRUE  |  Whether to evaluate a code chunk   |
+| warning    |  warning=TRUE   | Whether to display warning messages   |
+| error    | error=FALSE    | Whether to display error messages   |
+| fig.width, fig.height	   | fig.width=7	    | Include width/height (in inches) in the plots   |
+| fig.align    | fig.align="left"	 | Align plots: "left" "right" "center"   |
+| fig.cap   | fig.cap="your caption here"	 | Whether to include figure caption   |
+| collapse    | collapse=FALSE	 | Whether to merge text output and source code into a single code block in the output   |
+
+
+* Now, change to **"echo=TRUE"**, and see how the code is shown in the Rmd document along with the output Table, like this:
+
+<img width="1142" alt="texto18" src="https://user-images.githubusercontent.com/79876943/179470922-78a76826-8f19-4eac-8a32-b7f1fafccada.png">
+
+* Try with **"eval=TRUE"** first, and the code and Table will be shown, and then try **"eval=FALSE"**, and only you will see the code displayed, without evaluating it:
+
+<img width="1089" alt="texto19" src="https://user-images.githubusercontent.com/79876943/179478330-0b07534b-f836-43e5-a089-5f956ea7c3a6.png">
+
+<img width="1064" alt="texto20" src="https://user-images.githubusercontent.com/79876943/179478390-f1c47c6f-a866-4692-a8c7-f365818f247a.png">
+
 
 Now, we can explore our data a little bit. Copy and run the below code:
 
@@ -253,6 +271,33 @@ Then, you can see the plot beneath the code chunk:
 
 If you Knit, the results will appear included in the document:
 
-![last_text](https://user-images.githubusercontent.com/79876943/179031533-2f3895bd-e7c8-4f69-b7fa-abc19bab3987.jpg)
+![last_text](https://user-images.githubusercontent.com/79876943/179484096-24c6eff3-e4f2-4d7f-af18-2fd3a3e11f99.jpg)
+
+
+You can try different code chunk options; for instance:
+
+* Collapse the output and code with **collapse=TRUE**:
+
+<img width="951" alt="texto21" src="https://user-images.githubusercontent.com/79876943/179483656-5f751624-668b-42b0-b3a7-38253705533e.png">
+
+
+* Add a caption to the Plot with **fig.cap="Figure 1"**:
+
+<img width="911" alt="texto22" src="https://user-images.githubusercontent.com/79876943/179483510-c20b85f1-c207-4baa-b1a1-dcf37d44ee5c.png">
+
+
+* Align the Plot with **fig.align="right"**:
+
+<img width="870" alt="texto23" src="https://user-images.githubusercontent.com/79876943/179483368-c653e820-9d51-4f92-be7f-3d98ac802c32.png">
+
+## Examples of outputs and formats you can create using R Markdown:
+
+If you want to explore more utilities, [here]() you can find an Rmd document and the rendered HTML.
+
+You can use Rmd also to create:
+1. [presentations](http://svmiller.com/rmarkdown-example.pdf),
+2. [websites](https://rmarkdown.rstudio.com), 
+3. or combine Rmd with different R packages to create [iteractive documents](https://rpubs.com/jcheng/leaflet-layers-example), 
+4. or even [books](https://r4ds.had.co.nz) 
 
 
