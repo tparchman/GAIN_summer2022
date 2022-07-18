@@ -295,7 +295,7 @@ You can try different code chunk options; for instance:
 
 ## Examples of outputs and formats you can create using R Markdown:
 
-If you want to explore more utilities, [here]() you can find an Rmd document and the rendered HTML.
+If you want to explore more utilities, [here](https://github.com/tparchman/GAIN_summer2022/tree/main/day1_Rmd/Rmd%20examples)you can find an Rmd document and the rendered HTML.
 
 You can use Rmd also to create:
 1. [presentations](http://svmiller.com/rmarkdown-example.pdf),
