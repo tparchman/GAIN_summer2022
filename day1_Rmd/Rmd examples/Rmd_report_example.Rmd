@@ -1,0 +1,1159 @@
+---
+title: "Untitled"
+author: "COM"
+date: "27/6/2022"
+output: html_document
+---
+---
+title: "Exploring Basa dataset"
+author: "COM"
+date: 
+output: html_document
+code_download: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+######
+  
+## {.tabset}
+### SNP calling 
+
+Basa data: 
+<br>
+```{r eval=FALSE}
+Balsamorhiza sagittata
+Balsamorhiza hookeri
+BAHO3 x BASA hybrid 
+Lupinus wyethii (Outgroup)
+```
+
+Located in:
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#data">Basa and outgroups</button>
+<div id="data" class="collapse">   
+<br>
+```{r eval=FALSE}
+
+Raw data located in: 
+/archive/parchman_lab/rawdata_to_backup/BASA_CHDO_rawNOVASEQ/Library2-BASA_S2_L002_R1_001.fastq.gz
+
+Cleaned and demultiplexed .fastq files by individual:
+/working/tfaske/balsam/demult/fastq (BASA)
+/working/tfaske/balsam/demult/outgroup_fastq (outgroup)
+
+````
+</object>
+</div>
+
+<br>
+
+Generating the reference with dDocent:
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#dDocent">dDocent code</button>
+<div id="dDocent" class="collapse">   
+<br>
+```{r eval=FALSE}
+mkdir refOpt (place here 4 individuals per pop)
+./ReferenceOpt.sh 4 10 4 10 SE 5 0.95 0.99 0.005
+
+#####
+R
+library(ggplot2)
+data.table <- read.table("kopt.data", header = FALSE, col.names= c("k1","k2","Similarity", "Contigs"))
+data.table$K1K2 <- paste(data.table$k1, data.table$k2, sep=",")
+df=data.frame(data.table)
+df$K1K2 <- as.factor(df$K1K2)
+p <- ggplot(df, aes(x=Similarity, y=Contigs, group=K1K2)) + scale_x_continuous(breaks=seq(0.8,0.98,0.01)) + geom_line(aes(colour = K1K2))
+p
+ggsave("kvalues.pdf",p,height=8,width = 10,units = 'in')
+#####
+
+Run dDocent on this subset with the correct assembly parameters (skipping mapping and snp calling)
+
+./RefMapOpt.sh 4 6 4 6 0.975 SE 10
+./compress.sh (compress intermediate files)
+
+Move the reads and reference files to the main directory
+Run dDocent on the full data set, skipping trimming, assembly, snp calling
+````
+</object>
+</div>
+
+<br>
+
+SNP calling:
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#datos">SNP calling code</button>
+<div id="datos" class="collapse">   
+<br>
+```{r eval=FALSE}
+Run ./bwa_sort.sh
+INDS=($(for i in /working/mascaro/basa/outgroup_2/*.F.fq.gz; do echo $(basename ${i%.F.fq.gz*}); done))
+
+module load bwa/0.7.8
+module load samtools/1.3
+
+for IND in ${INDS[@]};
+do
+	# declare variables
+	REF=/working/mascaro/basa/outgroup_2/reference.fasta
+	FORWARD=/working/mascaro/basa/outgroup_2/${IND}.F.fq.gz
+	OUTPUT=/working/mascaro/basa/outgroup_2/assembly/${IND}_sort.bam
+	# then align and sort
+	echo "Aligning $IND with bwa"
+	bwa mem -M -t 10 $REF $FORWARD \
+	 | samtools view -b | \
+	samtools sort -T ${IND} > $OUTPUT
+
+done
+
+###bcftools
+Run ./bcftools.sh
+REF=/working/mascaro/basa/outgroup_2/reference.fasta
+
+module load bcftools/1.9
+bcftools mpileup -a AD,DP,SP -Ou -f $REF \
+./assembly/*_sort.bam | bcftools call -f GQ,GP \
+-mO z -o ./basa.vcf.gz
+````
+</object>
+</div>
+
+<br>
+
+Filtering:
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#filtering">Filtering code</button>
+<div id="filtering" class="collapse">   
+<br>
+```{r eval=FALSE}
+#### 
+#The obtained vcf file:
+#Final.recode.vcf: 
+
+# Statistics with Vcftools:
+vcftools --gzvcf basa.vcf.gz --site-quality --out /working/mascaro/basa/outgroup_2/filter/quality
+vcftools --gzvcf basa.vcf.gz --freq2 --out /working/mascaro/basa/outgroup_2/filter --max-alleles 2
+vcftools --gzvcf basa.vcf.gz --depth --out /working/mascaro/basa/outgroup_2/filter/meandepthind
+vcftools --gzvcf basa.vcf.gz --site-mean-depth --out /working/mascaro/basa/outgroup_2/filter/meandepsite
+vcftools --gzvcf basa.vcf.gz --missing-indv --out /working/mascaro/basa/outgroup_2/filter/missing
+vcftools --gzvcf basa.vcf.gz --missing-site --out /working/mascaro/basa/outgroup_2/filter/missingsite
+
+##### Examining statistics in R
+R
+library(ggplot2)
+library(tidyverse)
+
+var_qual <- read_delim("quality.lqual", delim = "\t",col_names = c("chr", "pos", "qual"), skip = 1)
+a <- ggplot(var_qual, aes(qual)) + geom_density(fill = "dodgerblue1", colour = "black", alpha = 0.3)
+a + theme_light()
+ggsave("quality.pdf",a,height=8,width = 10,units = 'in')
+
+var_depth <- read_delim("meandepthind.idepth", delim = "\t", col_names = c("chr", "pos", "mean_depth", "var_depth"), skip =1)
+a <- ggplot(var_depth, aes(mean_depth)) + geom_density(fill = "dodgerblue1", colour = "black", alpha = 0.3)
+a + theme_light()
+summary(var_depth$mean_depth)
+a + theme_light() + xlim(0, 100)
+ggsave("meandepth_ind.pdf",a,height=8,width = 10,units = 'in')
+
+var_miss <- read_delim("missingsite.lmiss", delim = "\t",col_names = c("chr", "pos", "nchr", "nfiltered", "nmiss","fmiss"), skip = 1)
+a <- ggplot(var_miss, aes(fmiss)) + geom_density(fill = "dodgerblue1", colour = "black", alpha = 0.3)
+a + theme_light()
+summary(var_miss$fmiss)
+ggsave("missing.pdf",a,height=8,width = 10,units = 'in')
+
+ind_depth <- read_delim("meandepsite.ldepth.mean", delim = "\t", col_names = c("ind", "nsites", "depth"), skip =1)
+a <- ggplot(ind_depth, aes(depth)) + geom_histogram(fill = "dodgerblue1", colour = "black", alpha = 0.3)
+a + theme_light()
+ggsave("meandepth_site.pdf",a,height=8,width = 10,units = 'in')
+
+ind_miss  <- read_delim("missing.imiss", delim = "\t",col_names = c("ind", "ndata", "nfiltered", "nmiss","fmiss"), skip = 1)
+a <- ggplot(ind_miss, aes(fmiss)) + geom_histogram(fill = "dodgerblue1", colour = "black", alpha = 0.3)
+a + theme_light()
+ggsave("missing.pdf",a,height=8,width = 10,units = 'in')
+#######
+
+# Filtering: 
+vcftools --vcf basa.vcf.gz --maf 0.05 --max-missing 0.6 --minQ 30 --min-meanDP 5 --max-meanDP 80 --minDP 5 --maxDP 80 --recode --out basa_filtered
+
+awk '$5 > 0.5' missing.imiss | cut -f1 > lowDP.indv
+
+vcftools --vcf basa_filtered.vcf.recode.vcf --remove lowDP.indv --recode --recode-INFO-all --out variants_clean
+
+vcftools --vcf variants_clean.recode.vcf --out basa_filtered_final --recode --remove-filtered-all
+
+# Statistics with Vcftools:
+vcftools --gzvcf basa_filtered_final.recode.vcf --site-quality --out quality
+vcftools --gzvcf basa_filtered_final.recode.vcf --freq2 --out $OUT --max-alleles 2
+vcftools --gzvcf basa_filtered_final.recode.vcf --depth --out meandepthind
+vcftools --gzvcf basa_filtered_final.recode.vcf --site-mean-depth --out meandepsite
+vcftools --gzvcf basa_filtered_final.recode.vcff --missing-indv --out missing
+vcftools --gzvcf basa_filtered_final.recode.vcf --missing-site --out missingsite
+
+# Filtering again:
+vcftools --vcf basa_filtered_final.recode.vcf --maf 0.05 --max-missing 0.75 --m
+inQ 30 --min-meanDP 10 --max-meanDP 80 --minDP 10 --maxDP 80 --recode --out basa_final2 
+
+# Statistics with Vcftools:
+vcftools --gzvcf basa_filtered2.recode.vcf --site-quality --out quality
+vcftools --gzvcf basa_filtered2.recode.vcf --freq2 --out $OUT --max-alleles 2
+vcftools --gzvcf basa_filtered2.recode.vcf --depth --out meandepthind
+vcftools --gzvcf basa_filtered2.recode.vcf --site-mean-depth --out meandepsite
+vcftools --gzvcf basa_filtered2.recode.vcf --missing-indv --out missing
+vcftools --gzvcf basa_filtered2.recode.vcf --missing-site --out missingsite
+
+After filtering: 27621 loci and 379 individuals
+```
+</object>
+</div>
+
+<br>
+
+### Genetic diversity and differentiation
+
+**Genetic diversity statistics:**
+<br>
+Overall, excess of heterozygotes (Ho>He; negative Fis values), high nucleotide diversity, and
+low Fst values. AMOVA showing only 22 % of the variance explained by population.
+<br>
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#statistics">statistics code</button>
+<div id="statistics" class="collapse">   
+<br>
+```{r eval=FALSE}
+library(vcfR)
+library("adegenet")
+library("hierfstat")
+library("pegas")
+basa.vcf <- read.vcfR("basa_final.vcf")
+basa.vcf
+
+##Fis, Fst
+my_genind <- vcfR2genind(basa.vcf)
+x<- my_genind 
+pops <- as.factor(c(pops))
+
+#Population specific Fis:
+myData.hfstat <- genind2hierfstat(my_genind, pop = pops)
+basicstat <- basic.stats(myData.hfstat, diploid = TRUE, digits = 4) 
+basicstat$Fis
+write.csv(basicstat$Fis, "Fis.csv")
+
+##Bootstrapping over loci of population's Fis
+boot.ppfis(myData.hfstat)
+#Nei's Pairwise FSTs: 
+x <- genet.dist(myData.hfstat,diploid=TRUE,method="Ds")# Nei’s standard genetic distance
+fst <- as.matrix(x)
+write.table(fst, "Fst.txt")
+##Bootstrapping over loci of pairwise Fst
+#boot.ppfst(myData.hfstat)
+
+basicstat$Ho #observed
+write.csv(basicstat$Ho, "HO.csv")
+basicstat$Hs #expected
+write.csv(basicstat$Hs, "Hs.csv")
+basicstat
+
+###########################################
+##vcftools Pi and TajimaD
+#!/bin/sh
+# .vcf file
+# .pop file (unique names of pops, one per line)
+# .map file (individual to population mapping file — 2 columns)
+
+#cat basa.pop | while read line;
+#do
+#grep "$line" basa.map > $line.pop
+#done
+
+#for p in *.pop
+#do
+#vcftools --vcf basa_final.vcf --keep $p --site-pi --out $p
+#done
+
+#for p in *.pop
+#do
+#vcftools --vcf basa_final.vcf --keep $p --TajimaD 100 --out $p
+#done
+
+#AMOVA:
+library(vcfR)
+library("adegenet")
+library("hierfstat")
+library("pegas")
+library("poppr")
+library("magrittr")
+library(ape)
+
+# vcf to genind
+BASA.VCF <- read.vcfR("basa.vcf")
+my_genind <- vcfR2genind(BASA.VCF)
+
+### Give a data set with stratification (individual, populations, subpopulations..)
+file.hier = read.table("ind_pop.txt", header=T)
+strata(my_genind) = file.hier
+my_genind
+
+## amova with stratifications
+amova.res.95 = poppr.amova(acth.hier.strat, ~pop/subpop, cutoff=0.95)
+amova.res.95
+write.table(amova.res.95$results, sep = ",", file = "results_amova.csv")
+write.table(amova.res.95$componentsofcovariance, sep = ",", file = "Components_covariance.csv")
+write.table(amova.res.95$statphi, sep = ",", file = "phi.csv")
+
+## To test if populations are significantly different
+amova.test.95 = randtest(amova.res.95)
+amova.test.95
+```
+</object>
+</div>
+<br>
+
+
+**Table 1.** He, Ho, Fis, Pi, Tajima D
+```{r echo=FALSE, message=FALSE, warning=FALSE,out.width='20%', fig.align="center"}
+library(filenamer)
+library(knitr)
+library(kableExtra) 
+library(dplyr)                                                         
+data=read.csv(file = "/home/caro/Escritorio/BASA_2/files/genetic_diversity.csv")
+kable(data, caption = "") %>%
+  kable_styling(font_size = 15) %>%
+  row_spec(0, bold = TRUE, italic = FALSE) %>% 
+  #row_spec(7, underline = TRUE, monospace = TRUE) %>% 
+  #row_spec(16, underline = TRUE, monospace = TRUE) %>%
+  scroll_box(width = "500px", height = "500px")
+```
+
+
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#fst">fst code</button>
+<div id="fst" class="collapse">   
+<br>
+```{css}
+.inline-btns p {
+  display: inline;
+}
+```
+
+```{r class.source = 'fold-hide'}
+
+library(downloadthis)
+Fst_results <- read.csv("/home/caro/Escritorio/BASA_2/basa_Rmd/Fst.csv")
+d_btn <- Fst_results %>% 
+  download_this(
+    path = system.file("/home/caro/Escritorio/BASA_2/basa_Rmd/", package = "downloadthis"),
+    output_name = "Fst values",
+    output_extension = ".csv",
+    button_label = "Fst",
+    button_type = "default",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+</object>
+</div>
+<br>
+
+<div class="inline-btns">
+  Fst results here `r d_btn` 
+</div>
+  
+**Table 2.** Fst 
+```{r echo=FALSE, message=FALSE, warning=FALSE,out.width='20%', fig.align="center"}
+library(filenamer)
+library(knitr)
+library(kableExtra) 
+library(dplyr)                                                         
+data=read.csv(file = "/home/caro/Escritorio/BASA_2/files/Fst.csv")
+kable(data, caption = "") %>%
+  kable_styling(font_size = 10) %>%
+  row_spec(0, bold = TRUE, italic = FALSE) %>% 
+  #row_spec(7, underline = TRUE, monospace = TRUE) %>% 
+  #row_spec(16, underline = TRUE, monospace = TRUE) %>%
+  scroll_box(width = "3500px", height = "1000px")
+```
+
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#Genetic distances">code</button>
+<div id="Genetic distances" class="collapse">   
+<br>
+```{css}
+.inline-btns p {
+  display: inline;
+}
+```
+
+```{r class.source = 'fold-hide'}
+
+library(downloadthis)
+Fst_results <- read.csv("/home/caro/Escritorio/BASA_2/basa_Rmd/Fst.csv")
+d_btn <- Fst_results %>% 
+  download_this(
+    path = system.file("/home/caro/Escritorio/BASA_2/basa_Rmd/", package = "downloadthis"),
+    output_name = "Genetic distances",
+    output_extension = ".csv",
+    button_label = "Genetic distances",
+    button_type = "default",
+    has_icon = TRUE,
+    icon = "fa fa-save"
+  )
+```
+</object>
+</div>
+<br>
+
+<div class="inline-btns">
+  Genetic distances results here `r d_btn` 
+</div>
+
+<br>
+<br>
+**Table 3.** AMOVA results
+```{r echo=FALSE, message=FALSE, warning=FALSE,out.width='20%', fig.align="center"}
+library(filenamer)
+library(knitr)
+library(kableExtra) 
+library(dplyr)                                                         
+data=read.csv(file = "/home/caro/Escritorio/BASA_2/files/amova.csv")
+kable(data, caption = "") %>%
+  kable_styling(font_size = 15) %>%
+  row_spec(0, bold = TRUE, italic = FALSE) %>% 
+  #row_spec(7, underline = TRUE, monospace = TRUE) %>% 
+  #row_spec(16, underline = TRUE, monospace = TRUE) %>%
+  scroll_box(width = "400px", height = "200px")
+```
+
+### Influence of hybridization
+
+**Phylogeny IQtree:**
+<br>
+Based on the phylogeny, B. hookeri and B. hybrid are embedded within B. sagittata.
+<br>
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#IQtree">iqtree code</button>
+<div id="IQtree" class="collapse">   
+<br>
+```{r eval=FALSE}
+### vcf to nexus (binary) for PhyloNet
+python vcf2phylip -i basa_outg.vcf -o LW -b
+
+bash-4.2$ python vcf2phylip.py --i basa_15_50_70.recode.vcf
+
+python vcf2phylip.py --i basa.vcf --phy
+./iqtree -s basa.phy -nt 10 -m GTR+ASC -bb 1000
+```
+</object>
+</div>
+<br>
+
+![](/home/caro/Escritorio/BASA_2/Images/iqtree/tree.png){#id .class width=100% height=100%}
+
+
+**Fbranch:**
+<br>
+Based on Fbranch results (very conservative parameters) there is gene flow among some B. sagittata populations and B. hookeri and B. hybrid. There is also some ancestral gene flow among B. sagittata and basal clades of B. hookeri and B. hybrid. 
+<br>
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#Fbranches">fbranches code</button>
+<div id="Fbranches" class="collapse">   
+<br>
+```{r eval=FALSE}
+
+./Dsuite Dtrios basa.vcf SETS.txt -t tree_trimmed.tree
+./Dsuite Fbranch -Z --Pb-matrix tree_trimmed.tree SETS_tree.txt > fbranch_collapsed_p.txt
+
+head -n 79 fbranch_collapsed_p.txt > f_plotting.txt
+
+#read in z-scores
+zscores <- read.csv("f_plotting.txt", sep = "\t")
+zscores[zscores < 0.05] <- 0
+write.table(zscores, "f_5_percent_plotting_trimmed.txt", sep='\t',row.names=F, quote=F)
+
+./dtools.py f_5_percent_plotting_trimmed.txt tree_trimmed.tree --outgroup LW_ME_2 --ladderize
+```
+</object>
+</div>
+<br>
+
+![](/home/caro/Escritorio/BASA_2/Images/fbranches/fbranch_todos.png){#id .class width=100% height=100%}
+
+
+**PhyloNet:**
+<br>
+
+Three reticulations so far.
+<br>
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#phylonet">phylonet code</button>
+<div id="phylonet" class="collapse">   
+<br>
+```{r eval=FALSE}
+### Trimming the vcf:
+
+vcftools --vcf basa_final.vcf --remove remove.txt (a single individual per population, except for the outgroups)
+
+```
+
+
+```{r eval=FALSE}
+Running PhyloNet from  0 to 10 networks:
+# nexus file, each sample with a single letter different ID
+# First 0 network, then 1 network, 2 etc.. based on the former network (see example file), 10 iterations
+  
+java -jar PhyloNet.jar phylonet_todos0.nex > results.txt
+```
+</object>
+</div>
+<br>
+
+![](/home/caro/Escritorio/BASA_2/Images/phylonet/phylonet3.png){#id .class width=100% height=100%}
+</object>
+</div>
+
+<br>
+
+**Genetic distances with outgroups:**
+<br>
+B. hookeri seems to be more differentiated from B. sagitatta and the B. hybrid based on pairwise genetic distances.
+<br>
+<button class="btn btn-link" data-toggle="collapse" data-target="#distances">distances code</button>
+<div id="distances" class="collapse">   
+<br>
+```{r eval=FALSE}
+#### G.distances
+##python vcf2phylip.py -i basa_final.vcf -fasta
+
+library(reshape)
+library(dplyr)
+library(gdata)
+library(ape)
+library(ggplot2)
+library(ggrepel)
+library(ggExtra)
+
+dna_aligned<-read.FASTA("basa_final.min4.fasta", type="DNA")
+dna_distances<-as.matrix(dist.dna(dna_aligned, model="raw",pairwise.deletion=T)*100)
+write.csv(dna_distances, "pairwise_distances.csv")
+diag(dna_distances)<- NA
+data<- melt(dna_distances)
+p<-ggplot(data = data, aes(x = X2, y = value, label = X1)) + 
+  geom_point() + scale_y_continuous(breaks=seq(0,5,1)) +
+  xlab('Taxa')+ ylab("Genetic distance % (raw)")+theme_classic()+theme(axis.text.x = element_text(angle = 
+  90,hjust=0.65,vjust=0.1),panel.background = element_rect(fill = NA),                                                              
+  panel.grid.major = element_line(colour = "lightgray"),panel.grid.major.y=element_line(size = NA),
+  panel.ontop = F) + geom_hline(yintercept=3, linetype="dashed", color ="gray")
+
+p1 <-ggMarginal(p, margins = "y", type="histogram")
+ggsave(plot=p1,"genetic_distances.pdf", width=30,height=15)
+
+```
+</object>
+</div>
+
+<br>
+
+![](/home/caro/Escritorio/BASA_2/Images/G_distances/gdistances.png){#id .class width=100% height=100%}
+</object>
+</div>
+
+### Spatial genetic structure
+
+**Map, PCA, UMAP, entropy:**
+<br>
+B. sagittata map:
+<br>
+<button class="btn btn-link" data-toggle="collapse" data-target="#map">map code</button>
+<div id="map" class="collapse">   
+<br>
+```{r eval=FALSE}
+#devtools::install_github("dkahle/ggmap")
+library(ggmap)
+library(devtools)
+require(ggplot2)
+require(ggsci)
+require(ggrepel)
+library(data.table)
+library(patchwork)
+
+setwd("/home/caro/Escritorio/BASA_2/con_outgroup/Map/")
+basacoord <- read.csv('coordinates.csv', header=T)
+names(basacoord) <- c('Pop','Lat','Long')
+
+map <- get_stamenmap(bbox = c(left = -120.5, bottom = 37.00, right = -109.0, top = 49.00),
+zoom=8,scale = 3,maptype = 'terrain-background')
+##zoom controls resolution, 10 takes forever
+
+ggmap(map) + geom_point(data = basacoord, aes(x = Long, y = Lat),size=3,pch=21,fill="white",col="black") +
+xlab("Longitude") + ylab("Latitude") +
+coord_map(xlim=c(-120.5,-109.0),ylim=c(37.00,49.00)) #selects the range for x and y
+
+
+group.colors   <- c(AN = "#F0F8FF", AS ="#E9967A", BH ="#FFEBCD", BB = "#F08080",CF = "#8B0000",CC ="#FF3030",CN ="#CD6090",CL = "#8B3A62", EC = "#FF82AB", 
+                    GA ="#FFC0CB",GB ="#FFE1FF", GJ="#CDB5CD",JV ="#8B7B8B", KA ="#9B30FF",KB="#8470FF",KM ="#27408B",LM ="#87CEFA", 
+                    LL="#104E8B",LC="#8DB6CD",MM="#6E7B8B",MT="#FFB90F",QG="#EE7600",RC="#FFF68F",RL="#8B7500", 
+                    SL="#2F4F4F",SD="#008B8B",SP="#006400",SC="#BDB76B", SY="#ADFF2F", TM="#00CD66",RP="#00CDCD", WC="#BBFFFF")
+
+map <- ggmap(map) + geom_point(data = basacoord, aes(x = Long, y = Lat),size=2,col="black",fill='white',pch=21) +
+geom_label_repel(data = basacoord, aes(x = Long, y = Lat,label = Pop,fill=Pop),
+colour = "black", fontface = "bold") +
+    scale_fill_manual(values=group.colors) +
+coord_map(xlim=c(-120.5,-109.0),ylim=c(37.00,49.00)) +
+xlab("Longitude") + ylab("Latitude") + theme_bw() +
+theme(legend.position = 'none',
+axis.text = element_text(size=13),
+axis.title = element_text(size = 15, colour="black",face = "bold", vjust = 1),
+panel.border = element_rect(size = 1.5, colour = "black"),
+panel.grid.major = element_blank(),
+panel.grid.minor = element_blank())
+map
+ggsave('map_basa.pdf',height=8,width=5)
+```
+</object>
+</div>
+<br>
+
+
+PCA:
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#pca">pca code</button>
+<div id="pca" class="collapse">   
+<br>
+```{r eval=FALSE}
+library(data.table)
+library(ggplot2)
+library(ggsci)
+library(umap)
+library(LEA)
+library(readr)
+library(ggpubr)
+setwd("/home/caro/Escritorio/BASA_2/con_outgroup/PCA_UMAP/")
+
+##### PCA  #####
+PCA_gen <- function(df_gen,indv,num=5){ #add ggplot, add tw, add # of output
+  #pkgTest("ggplot2")
+  df_gen <- apply(df_gen, 2, function(df) gsub(-1,NA,df,fixed=TRUE))
+  df_gen <- apply(df_gen, 2, function(df) as.numeric(df))
+  colmean<-apply(df_gen,2,mean,na.rm=TRUE)
+  normalize<-matrix(nrow = nrow(df_gen),ncol=ncol(df_gen))
+  af<-colmean/2
+  for (m in 1:length(af)){
+    nr<-df_gen[ ,m]-colmean[m]
+    dn<-sqrt(af[m]*(1-af[m]))
+    normalize[ ,m]<-nr/dn
+  }
+  
+  normalize[is.na(normalize)]<-0
+  method1<-prcomp(normalize, scale. = FALSE,center = FALSE)
+  pve <- summary(method1)$importance[2,]
+  print(pve[1:50])
+  if(nrow(df_gen) < num){
+    num <- nrow(df_gen)
+  }
+  
+  pca_X<- method1$x[,1:num]
+  pca_X <- as.data.frame(pca_X)
+  pca_X$Pop <- indv$Pop
+  pca_X$ID <- indv$ID
+  pca_out <- list("pca_df"=pca_X,"pve"=pve)
+  #print(PCA_fig(pca_out))
+  return(pca_out)
+}
+
+######################## PCA_fig() ###################
+
+PCA_fig <- function(pca_out,fill="Pop"){ #add PCA setting or normal
+  xlab <- paste("PCA1 (",round(pca_out$pve[1]*100,2),"%)",sep="")
+  ylab <- paste("PCA2 (",round(pca_out$pve[2]*100,2),"%)",sep="")
+  pca_df <- pca_out$pca_df
+  filler <- as.character(pca_df[[fill]])
+  ggplot(data = pca_df, aes(x=PC1,y=PC2,fill=filler)) + 
+    geom_point(pch=21,colour='black',size = 3)+ 
+    xlab(xlab) + ylab(ylab) +
+    theme_bw() + 
+    theme(#legend.position = 'none',
+      axis.text = element_text(size=13), 
+      axis.title = element_text(size = 16, colour="black",face = "bold",vjust = 1),
+      panel.border = element_rect(size = 1.5, colour = "black"),
+      legend.text = element_text(size=13),
+      legend.title = element_text(size = 16, colour="black",face = "bold",vjust = 1),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank())
+}
+
+###### 
+df012<-fread("basa.012",sep="\t", data.table=F) 
+df012 <- df012[,-1]
+Pop_ID_Sum <- read.csv('Pop_ID_sin.csv')
+
+############# 
+pca_out <- PCA_gen(df012,Pop_ID_Sum)
+pve <- pca_out$pve[1:50]
+pve
+
+pca_df <- pca_out$pca_df[,1:50]
+pca_df <- cbind(Pop_ID_Sum,pca_df)
+write.csv(pca_df,'pca_df_.csv',row.names = FALSE)
+
+############## 
+pca_df <- read.csv("pca_df.csv")
+pve <- c(0.06575, 0.03794, 0.02006, 0.01616, 0.01205) 
+
+group.colors <- c(AN = "#F0F8FF", AS ="#E9967A", BH ="#FFEBCD", BB = "#F08080",CF = "#8B0000",CC ="#FF3030",CN ="#CD6090",CL = "#8B3A62", EC = "#FF82AB", GA 
+                  ="#FFC0CB",GB ="#FFE1FF", GJ="#CDB5CD",JV ="#8B7B8B", KA ="#9B30FF",KB="#8470FF",KM ="#27408B",LM ="#87CEFA", 
+                  LL="#104E8B",LC="#8DB6CD",MM="#6E7B8B",MT="#FFB90F",QG="#EE7600",RC="#FFF68F",RL="#8B7500", 
+                  SL="#2F4F4F",SD="#008B8B",SP="#006400",SC="#BDB76B", SY="#ADFF2F", TM="#00CD66",RP="#00CDCD", WC="#BBFFFF"#,B.hookeri="#ffff00ff",
+  #BAH03xB.hybrid="#000000ba")
+
+PCA1VS2 <- ggplot(data = pca_df, aes(x=PC1,y=PC2,fill=as.character(Pop), color=Pop)) + 
+  geom_point(pch=21,colour='black',size = 5) +
+  xlab(paste("PC",1," (",pve[1]*100,"%)",sep="")) + ylab(paste("PC",2," (",pve[2]*100,"%)",sep=""))+
+  scale_fill_manual(values=group.colors)+ theme_bw() + 
+  theme(legend.position = 'right',
+        axis.text = element_text(size=11), 
+        axis.title = element_text(size = 13, colour="black",face = "bold",vjust = 1),
+        panel.border = element_rect(size = 1.5, colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+ggsave("pca1_2.pdf",PCA1VS2,height=8,width = 10,units = 'in')
+```
+</object>
+</div>
+<br>
+
+UMAP:
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#umap">umap code</button>
+<div id="umap" class="collapse">   
+<br>
+```{r eval=FALSE}
+#### UMAP
+custom.settings = umap.defaults
+custom.settings$min_dist = 0.9
+custom.settings$n_neighbors = 14
+
+umap_g <- as.data.frame(umap(df012,config = custom.settings)$layout )
+names(umap_g) <- c('layout1','layout2')
+umap_g <- cbind(Pop_ID_Sum,umap_g)
+
+#### UMAP gprob ####
+umap_g_plot <- ggplot(data = umap_g, aes(x=layout1,y=layout2,fill=as.character(Pop))) +
+  geom_point(colour='black',size = 5,pch=21) + #ggtitle("UMAP n_neighbors 14 min_dist 0.8") +
+  xlab('Layout 1') + ylab('Layout 2') +
+  scale_fill_manual(values=group.colors) + 
+  theme_bw() +
+  theme(legend.position = 'right',
+        axis.text = element_text(size=11), 
+        axis.title = element_text(size = 13, colour="black",face = "bold",vjust = 1),
+        panel.border = element_rect(size = 1.5, colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+ggsave("umap_09_14.pdf",umap_g_plot,height=8,width = 10,units = 'in')
+```
+</object>
+</div>
+<br>
+
+entropy:
+<br>
+
+
+<button class="btn btn-link" data-toggle="collapse" data-target="#Entropy">entropy code</button>
+<div id="Entropy" class="collapse">   
+<br>
+```{r eval=FALSE}
+#perl /working/mascaro/acth/entropy2/vcf2mpglV1.3TLP.pl basa.vcf
+#perl /working/mascaro/acth/entropy2/gl2genestV1.3.pl basa.mpgl mean
+
+########### PCA_entropy
+##row = loci, col = indv 
+require(readr)
+require(MASS)
+require(LEA)
+require(ggplot2)
+
+PCA_entropy <- function(g){
+  colmean<-apply(g,2,mean,na.rm=TRUE)
+  normalize<-matrix(nrow = nrow(g),ncol=ncol(g))
+  af<-colmean/2
+  for (m in 1:length(af)){
+    nr<-g[ ,m]-colmean[m]
+    dn<-sqrt(af[m]*(1-af[m]))
+    normalize[ ,m]<-nr/dn
+  }
+  
+  normalize[is.na(normalize)]<-0
+  method1<-prcomp(normalize, scale. = FALSE,center = FALSE)
+  pve <- summary(method1)$importance[2,]
+  print(pve[1:5])
+  pca_df<- method1$x[,1:27]
+  return(pca_df)
+} 
+
+require(readr)
+require(MASS)
+require(LEA)
+require(ggplot2)
+g <- read.table("pntest_mean_variants_maf5_miss9_thin100_noBadInds.recode.txt", header=F)
+Pop_ID_Sum <- read.csv("Pop_ID.csv")
+pca_df <- PCA_entropy(t(g))
+
+#Header for entropy:
+Pop_ID <- read.csv("Pop_ID.csv")
+Sp_Pop <- paste("AT",Pop_ID$Pop,sep="_")
+Pop_ID <- paste(Pop_ID$Pop,Pop_ID$ID,sep="_")
+Header <- data.frame(Sp_Pop,Pop_ID)
+write.table(t(Header),'entropy_header.txt',sep = " ", quote = FALSE,row.names =FALSE)
+
+dim(g)
+#[1] loci_individuals
+
+Pop_ID_Sum <- read.csv("Pop_ID_Sum.csv")
+pca_df <- PCA_entropy(t(g)) ######change PCA_entropy to allow for selecting PC# output and tw 
+test
+
+library(MASS)
+
+k2<-kmeans(pca_df[,1:5],2,iter.max=10,nstart=10,algorithm="Hartigan-Wong")
+k3<-kmeans(pca_df[,1:5],3,iter.max=10,nstart=10,algorithm="Hartigan-Wong")
+k4<-kmeans(pca_df[,1:5],4,iter.max=10,nstart=10,algorithm="Hartigan-Wong")
+k5<-kmeans(pca_df[,1:5],5,iter.max=10,nstart=10,algorithm="Hartigan-Wong")
+k6<-kmeans(pca_df[,1:5],6,iter.max=10,nstart=10,algorithm="Hartigan-Wong")
+k7<-kmeans(pca_df[,1:5],7,iter.max=10,nstart=10,algorithm="Hartigan-Wong")
+k8<-kmeans(pca_df[,1:5],8,iter.max=10,nstart=10,algorithm="Hartigan-Wong")
+k9<-kmeans(pca_df[,1:5],9,iter.max=10,nstart=10,algorithm="Hartigan-Wong")
+k10<-kmeans(pca_df[,1:5],10,iter.max=10,nstart=10,algorithm="Hartigan-Wong")
+
+ldak2<-lda(x=pca_df[,1:5],grouping=k2$cluster,CV=TRUE)
+ldak3<-lda(x=pca_df[,1:5],grouping=k3$cluster,CV=TRUE)
+ldak4<-lda(x=pca_df[,1:5],grouping=k4$cluster,CV=TRUE)
+ldak5<-lda(x=pca_df[,1:5],grouping=k5$cluster,CV=TRUE)
+ldak6<-lda(x=pca_df[,1:5],grouping=k6$cluster,CV=TRUE)
+ldak7<-lda(x=pca_df[,1:5],grouping=k7$cluster,CV=TRUE)
+ldak8<-lda(x=pca_df[,1:5],grouping=k8$cluster,CV=TRUE)
+ldak9<-lda(x=pca_df[,1:5],grouping=k9$cluster,CV=TRUE)
+ldak10<-lda(x=pca_df[,1:5],grouping=k10$cluster,CV=TRUE)
+
+write.table(round(ldak2$posterior,5),file="ldak2.txt",quote=F,row.names=F,col.names=F)
+write.table(round(ldak3$posterior,5),file="ldak3.txt",quote=F,row.names=F,col.names=F)
+write.table(round(ldak4$posterior,5),file="ldak4.txt",quote=F,row.names=F,col.names=F)
+write.table(round(ldak5$posterior,5),file="ldak5.txt",quote=F,row.names=F,col.names=F)
+write.table(round(ldak6$posterior,5),file="ldak6.txt",quote=F,row.names=F,col.names=F)
+write.table(round(ldak7$posterior,5),file="ldak7.txt",quote=F,row.names=F,col.names=F)
+write.table(round(ldak8$posterior,5),file="ldak8.txt",quote=F,row.names=F,col.names=F)
+write.table(round(ldak9$posterior,5),file="ldak9.txt",quote=F,row.names=F,col.names=F)
+write.table(round(ldak10$posterior,5),file="ldak10.txt",quote=F,row.names=F,col.names=F)
+
+#cat entropy_header.txt basa.mpgl > good_snps.entropy.mpgl
+## add 584 36161 1 to the top of entropy_header.txt y dejas esa linea vacia! mirar el ejemplo 
+mio#########
+entropy -i basa_entropy.mpgl -o basa_k2.hdf5 -l 70000 -b 30000 -t 10 -s 20 -e .01 -k 2 -q 
+ldak2.txt -m 1 -w 0 &> k2stdout.txt
+entropy -i basa_entropy.mpgl -o basa_k3.hdf5 -l 70000 -b 30000 -t 10 -s 20 -e .01 -k 3 -q 
+ldak2.txt -m 1 -w 0 &> k3stdout.txt
+entropy -i basa_entropy.mpgl -o basa_k4.hdf5 -l 70000 -b 30000 -t 10 -s 20 -e .01 -k 4 -q 
+ldak4.txt -m 1 -w 0 &> k4stdout.txt
+entropy -i basa_entropy.mpgl -o basa_k5.hdf5 -l 70000 -b 30000 -t 10 -s 20 -e .01 -k 5 -q 
+ldak5.txt -m 1 -w 0 &> k5stdout.txt
+entropy -i basa_entropy.mpgl -o basa_k6.hdf5 -l 70000 -b 30000 -t 10 -s 20 -e .01 -k 6 -q 
+ldak6.txt -m 1 -w 0 &> k6stdout.txt
+entropy -i basa_entropy.mpgl -o basa_k7.hdf5 -l 70000 -b 30000 -t 10 -s 20 -e .01 -k 7 -q 
+ldak7.txt -m 1 -w 0 &> k7stdout.txt
+entropy -i basa_entropy.mpgl -o basa_k8.hdf5 -l 70000 -b 30000 -t 10 -s 20 -e .01 -k 8 -q 
+ldak8.txt -m 1 -w 0 &> k8stdout.txt
+entropy -i basa_entropy.mpgl -o basa_k9.hdf5 -l 70000 -b 30000 -t 10 -s 20 -e .01 -k 9 -q 
+ldak9.txt -m 1 -w 0 &> k9stdout.txt
+entropy -i basa_entropy.mpgl -o basa_k10.hdf5 -l 70000 -b 30000 -t 10 -s 20 -e .01 -k 10 -q 
+ldak10.txt -m 1 -w 0 &>
+  k10stdout.txt 
+
+### DIC value
+module load entropy/1.2
+
+###Get the DICs values for each K value:
+
+estpost.entropy basa_k2.hdf5 -s 3 -p deviance > DIC_k2.txt
+estpost.entropy basa_k3.hdf5 -s 3 -p deviance > DIC_k3.txt
+estpost.entropy basa_k4.hdf5 -s 3 -p deviance > DIC_k4.txt
+estpost.entropy basa_k5.hdf5 -s 3 -p deviance > DIC_k5.txt
+estpost.entropy basa_k6.hdf5 -s 3 -p deviance > DIC_k6.txt
+estpost.entropy basa_k7.hdf5 -s 3 -p deviance > DIC_k7.txt
+estpost.entropy basa_k8.hdf5 -s 3 -p deviance > DIC_k8.txt
+estpost.entropy basa_k9.hdf5 -s 3 -p deviance > DIC_k9.txt
+estpost.entropy basa_k10.hdf5 -s 3 -p deviance > DIC_k10.txt
+
+###Generate entropy q files:
+
+estpost.entropy basa_k2.hdf5 -p q -s 0 -o q2.txt
+estpost.entropy basa_k3.hdf5 -p q -s 0 -o q3.txt
+estpost.entropy basa_k4.hdf5 -p q -s 0 -o q4.txt
+estpost.entropy basa_k5.hdf5 -p q -s 0 -o q5.txt
+estpost.entropy basa_k6.hdf5 -p q -s 0 -o q6.txt
+estpost.entropy basa_k7.hdf5 -p q -s 0 -o q7.txt
+estpost.entropy basa_k8.hdf5 -p q -s 0 -o q8.txt
+estpost.entropy basa_k9.hdf5 -p q -s 0 -o q9.txt
+estpost.entropy basa_k10.hdf5 -p q -s 0 -o q10.txt
+
+###Generate gprobs file:
+
+estpost.entropy  basa_k2.hdf5 -p gprob -s 0 -o gprob.txt
+
+# plotting
+library(ggplot2)
+library(forcats)
+library(ggthemes)
+library(patchwork)
+
+kdf2 <- read.csv("/home/caro/Escritorio/BASA_2/con_outgroup/bcftools/entropy/definitivo/q2.csv"
+                 )
+k2plot <-
+  ggplot(kdf2, aes(factor(sampleID), prob, fill = factor(popGroup))) +
+  geom_col(color = "gray", size = 0.1) +
+  facet_grid(~fct_inorder(loc), switch = "x", scales = "free", space = "free") +
+  theme_minimal() + labs(x = "Populations", title = "K=2", y = "Ancestry") +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_x_discrete(expand = expansion(add = 1)) +
+  theme(
+    panel.spacing.x = unit(0.1, "lines"),
+    axis.text.x = element_blank(),
+    panel.grid = element_blank()
+  ) +
+  scale_fill_gdocs(guide = FALSE)
+
+k2plot
+ggsave("k2.pdf",k3plot,height=8,width = 20,units = 'in')
+```
+</object>
+</div>
+<br>
+
+![](/home/caro/Escritorio/BASA_2/Images/PCA_umap_con/k2_pca_umap.png){#id .class width=100% height=100%}
+</object>
+</div>
+<br>
+
+**IBD, IBE:**
+<button class="btn btn-link" data-toggle="collapse" data-target="#IBD">ibd code</button>
+<div id="ibd" class="collapse">   
+<br>
+```{r eval=FALSE}
+
+```
+</object>
+</div>
+<br>
+![](/home/caro/Escritorio/BASA_2/Images/IBD_IBE/IBD.png){#id .class width=100% height=100%}
+</object>
+</div>
+<br>
+
+
+**EEMS, unPC:**
+<button class="btn btn-link" data-toggle="collapse" data-target="#eems">eems code</button>
+<div id="eems" class="collapse">   
+<br>
+```{r eval=FALSE}
+#EEMS
+
+diffs <- read.table("./test/example-SNP-major-mode.diffs")
+diffs
+
+datapath = ./data/inputdata
+mcmcpath = ./data/outputdata
+nIndiv = 246
+nSites = 5677
+nDemes = 300
+diploid = false
+numMCMCIter = 200000000
+numBurnIter = 100000000
+numThinIter = 999999
+
+./runeems_snps --params configurationfile.ini --seed 123 (randome seed, optional)
+./runeems_snps --params configurationfile2.ini --seed 123 
+./runeems_snps --params configurationfile3.ini --seed 123 
+
+EEMS results visualization:
+library(rEEMSplots)
+
+mcmcpath <- c("./eems_output/output_1", "./eems_output/output_2", "./eems_output/output_3")
+plotpath = (""./eems_output/plots"")
+
+#unPC
+
+library(unPC)
+
+unPC(inputToProcess  = "pca_eigen.evec", outputPrefix = "unPC",
+     runDataImport = TRUE, runPairwiseCalc = TRUE, geogrCoords= "Lon_Lat.txt",
+     roundEarth = TRUE, firstPC = 1, secondPC = 2, runPlotting = TRUE,
+     applyManualColor = FALSE, geogrCoordsForPlotting = "Lon_Lat_popnAggregated.txt", 
+     plotWithMap = FALSE,
+     ellipseWidth = 0.05, populationPointNormalization = 7,
+    runAggregated = TRUE, savePlotsToPdf = TRUE)
+
+unpcout <- readRDS("unPC_pairwiseDistCalc_unPC.rds")
+unPC <- unpcout$ratioPCToGeogrDist 
+write.csv(unpcout, "unPCscores.csv")
+```
+
+
+![](/home/caro/Escritorio/BASA_2/Images/EEMS/map_eems_unpc.png){#id .class width=100% height=100%}
+</object>
+</div>
+<br>
+
+### Influence of environment
+
+**pRDA:**
+  
+<button class="btn btn-link" data-toggle="collapse" data-target="#pRDA">pRDA code</button>
+<div id="pRDA" class="collapse">   
+<br>
+
+```{r eval=FALSE}
+############## RDA
+library(adegenet)
+library(poppr)
+library(tidyverse)
+library(vcfR)
+library(hierfstat)
+library(pegas)
+library(magrittr)
+library(ape)
+library(psych)
+library(adespatial)
+library(vegan)
+
+## Loading the genetic data 
+setwd("/home/caro/Escritorio/BASA_2/con_outgroup/bcftools/pRDA/")
+##setwd("/home/caro/Escritorio/")
+gen <- read.csv("basa_prda.012", row.names=1)
+##gen <- read.csv("acth_012.csv", row.names=1)
+dim(gen)
+sum(is.na(gen))
+gen.imp <- apply(gen, 2, function(x) replace(x, is.na(x), as.numeric(names(which.max(table(x))))))
+
+## Env. variables
+Env <- read.csv("/home/caro/Escritorio/BASA_2/con_outgroup/bcftools/pRDA/Env.csv", header = TRUE)
+Coordinates <- read.csv("/home/caro/Escritorio/BASA_2/con_outgroup/bcftools/pRDA/Lon_Lat.csv")
+PopStruct <- read.csv("/home/caro/Escritorio/BASA_2/con_outgroup/bcftools/pRDA/pca_df_.csv")
+
+## Table gathering all variables
+Variables <- data.frame(Env, Coordinates, PopStruct)
+Variables[1:5,]
+
+## Null model
+RDA0 <- rda(gen.imp ~ 1,  Variables) 
+## Full model
+RDAfull <- rda(gen.imp ~ ppt+tdmean+tmax+tmean+tmin+vpdmax+vpdmin+slope+Af+soilawc+sloprad+afrad+heatload+CumlWs+DurCWD+OnsetCWD+CumlAET+CumlCWD+CumlPET+WsAE
+               Tspr+FallAET+MaxCWD+pcseas+CumlGDD+AETgdd+DurGDD+mxtmpfal+mxtmpspr+mxtmpsum+mxtmpwin+mntmpfal+ mntmpspr+ 
+                 mntmpsu+mntmpwin+prcpfal+prcpspr+prcpsum+prcpwin+Elevation+ mndtmpfal+mndtmpspr+mndtmpsu+mndtmpwin+Lon+Lat+PC1+PC2, Variables)
+#Quito esta: +DeclAET y quito los guiones bajos de ID
+
+## "To conduct the selection procedure we used the ordiR2step function of the package vegan and the following stopping criteria: variable significance of p <
+0.01 using 1000 permutations, and the adjusted R2 of the global model." 
+mod <- ordiR2step(RDA0, RDAfull, Pin = 0.01, R2permutations = 1000, R2scope = T, direction = T)
+mod$anova
+
+## Removing correlated predictors:
+env <- subset(Variables, select=c(tmin,vpdmin,sloprad,prcpfal,mndtmpfal,tdmean,mxtmpfal,mntmpsu,mxtmpsum,mndtmpsu,mndtmpwin,AETgdd,CumlAET,soilawc,prcpwin,Cu
+                                  mlCWD,mntmpfal,MaxCWD,CumlGDD,tmax,tmean,pcseas,afrad,mntmpspr,OnsetCWD,mndtmpspr,CumlWs,mntmpwin,DurCWD))
+str(env)
+
+correlation <-cor(env, method = "pearson")
+write.csv(correlation, "/home/caro/Escritorio/BASA_2/con_outgroup/bcftools/pRDA/correlation1.csv")
+env2 <- subset(Variables, 
+               
+               select=c(sloprad,prcpfal,mndtmpfal,tdmean,mxtmpfal,mntmpsu,mxtmpsum,soilawc,prcp
+                        
+                        win,CumlCWD,MaxCWD,CumlGDD,tmax,pcseas,afrad,OnsetCWD,CumlWs))
+
+correlation2 <-cor(env2, method = "pearson")
+write.csv(correlation2, "/home/caro/Escritorio/BASA_2/con_outgroup/bcftools/pRDA/correlation2.c
+          sv")
+env3 <- subset(Variables, 
+               select=c(sloprad,tdmean,mxtmpfal,mxtmpsum,soilawc,prcpwin,tmax,pcseas,afrad,Onse
+                        tCWD,CumlWs))
+
+pairs.panels(env3, scale = TRUE, density =TRUE, ellipses =TRUE, methods="pearson")
+pdf("/home/caro/Escritorio/BASA_2/con_outgroup/bcftools/pRDA/Pairs_pannel3.pdf")
+#######
+
+####### Selected: sloprad,tdmean,mxtmpfal,mxtmpsum,soilawc,prcpwin,tmax,pcseas,afrad,OnsetCWD,CumlWs
+
+## Full model
+pRDAfull <- rda(gen.imp ~ PC1 + PC2+ + Lon + Lat+ sloprad+tdmean+mxtmpfal+mxtmpsum+soilawc+prcpwin+tmax+pcseas+afrad+OnsetCWD+CumlWs, Variables)
+pRDAfull
+#RsquareAdj(pRDAfull)
+#anova(pRDAfull)
+
+## Pure climate model
+pRDAclim <- rda(gen.imp ~ sloprad+tdmean+mxtmpfal+mxtmpsum+soilawc+prcpwin+tmax+pcseas+afrad+OnsetCWD+CumlWs + Condition(PC1 + PC2+ Lon + Lat),Variables)
+pRDAclim
+#RsquareAdj(pRDAclim)
+#anova(pRDAclim)
+
+# Model summaries
+#RsquareAdj(pRDAclim) # adjusted Rsquared 
+#The eigenvalues for the constrained axes reflect the variance explained by each canonical axis:
+#summary(pRDAclim, display=NULL) #display = NULL optional  
+#summary(eigenvals(pRDAclim, model = "constrained"))
+#screeplot(pRDAclim)
+
+#check our RDA model for significance using formal tests. We can assess both the full model and each constrained axis using F-statistics (Legendre et al, 
+2010). The null hypothesis is that no linear relationship exists between the SNP data and the environmental predictors. 
+#anova.cca(pRDAclim, permutations = 100) # full model
+#anova.cca(pRDAclim, permutations = 100, by="margin") # per variable 
+
+#signif.axis <- anova.cca(pRDAclim, by="axis", parallel=getOption("mc.cores"))
+#signif.axis
+#vif.cca(pRDAclim) # variance inflation factor (<10 OK)
+
+# Model: rda(formula = gen.imp ~ AETgdd + AfRad + FallAET + MaxCWD + mxtmpwin + prcpsum + SlopRad + WsAETspr + Condition(PC1 + PC2 + Lon + Lat), data = 
+Variables)
+#           Df Variance      F   Pr(>F)   
+# AETgdd     1   11.505 15.742 0.009901 **
+# AfRad      1   17.800 24.356 0.009901 **
+# FallAET    1   14.477 19.808 0.009901 **
+# MaxCWD     1   21.014 28.754 0.009901 **
+# mxtmpwin   1   15.724 21.516 0.009901 **
+# prcpsum    1   16.850 23.056 0.009901 **
+# SlopRad    1   13.357 18.276 0.009901 **
+# WsAETspr   1   15.852 21.691 0.009901 **
+
+
+## Pure neutral population structure model  
+pRDAstruct <- rda(gen.imp ~ PC1 + PC2 + Condition(Lon + Lat + sloprad+tdmean+mxtmpfal+mxtmpsum+soilawc+prcpwin+tmax+pcseas+afrad+OnsetCWD+CumlWs),  
+                  Variables)
+pRDAstruct
+#RsquareAdj(pRDAstruct)
+#anova(pRDAstruct)
+
+##Pure geography model 
+pRDAgeog <- rda(gen.imp ~ Lon + Lat + Condition(sloprad+tdmean+mxtmpfal+mxtmpsum+soilawc+prcpwin+tmax+pcseas+afrad+OnsetCWD+CumlWs + PC1 + PC2),  Variables)
+pRDAgeog
+#RsquareAdj(pRDAgeog)
+#anova(pRDAgeog)
+```
+</object>
+</div>
+<br>
+
+
+**Table 3.** 
+```{r echo=FALSE, message=FALSE, warning=FALSE,out.width='20%', fig.align="center"}
+library(filenamer)
+library(knitr)
+library(kableExtra) 
+library(dplyr)                                                         
+data=read.csv(file = "/home/caro/Escritorio/BASA_2/files_rmd/Variance.csv")
+kable(data, caption = "") %>%
+  kable_styling(font_size = 14) %>%
+  row_spec(0, bold = TRUE, italic = FALSE) %>% 
+  #row_spec(7, underline = TRUE, monospace = TRUE) %>% 
+  #row_spec(16, underline = TRUE, monospace = TRUE) %>%
+  scroll_box(width = "1000px", height = "450px")
+```
+
