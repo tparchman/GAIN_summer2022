@@ -23,21 +23,22 @@ knitr::opts_chunk$set(echo = TRUE)
   **-3.** PCA3 vs PCA4 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,out.width='100%', fig.align="center"}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("EBImage")
 library("EBImage")
-setwd("/home/caro/Escritorio/ACTH/acth_md/umap/figures_ACTH/PCA no DC/")
-net_name1 <- list.files(path="/home/caro/Escritorio/ACTH/acth_md/umap/figures_ACTH/PCA no DC/", pattern = "png")
+setwd("/home/caro/")
+#the "list" of images in the folder must have the same size
+net_name1 <- list.files(path="/home/caro/", pattern = "png")
 display(readImage(net_name1, "PNG"), method="browser")
 ```
 
 
 **-4.** UMAP    
 ```{r echo=FALSE, message=FALSE, warning=FALSE,out.width='500', out.height='700px', fig.align="right"}
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install("EBImage")
+setwd("/home/caro/")
 library("EBImage")
-setwd("/home/caro/Escritorio/ACTH/acth_md/umap/figures_ACTH/UMAP suple/")
-net_name2 <- list.files(path="/home/caro/Escritorio/ACTH/acth_md/umap/figures_ACTH/UMAP suple/", pattern = "png")
+net_name2 <- list.files(path="/home/caro/", pattern = "png")
 display(readImage(net_name2, "PNG"), method="browser")
 ```
 
