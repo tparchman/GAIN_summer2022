@@ -1,0 +1,43 @@
+
+---
+title: "Images with Zoom"
+author: ''
+date: ''
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+######
+  
+## {.tabset}
+### Examples 
+
+
+  **-1.** PCA1 vs PCA2  
+  **-2.** PCA2 vs PCA3  
+  **-3.** PCA3 vs PCA4 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,out.width='100%', fig.align="center"}
+library("EBImage")
+setwd("/home/caro/Escritorio/ACTH/acth_md/umap/figures_ACTH/PCA no DC/")
+net_name1 <- list.files(path="/home/caro/Escritorio/ACTH/acth_md/umap/figures_ACTH/PCA no DC/", pattern = "png")
+display(readImage(net_name1, "PNG"), method="browser")
+```
+
+
+**-4.** UMAP    
+```{r echo=FALSE, message=FALSE, warning=FALSE,out.width='500', out.height='700px', fig.align="right"}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("EBImage")
+library("EBImage")
+setwd("/home/caro/Escritorio/ACTH/acth_md/umap/figures_ACTH/UMAP suple/")
+net_name2 <- list.files(path="/home/caro/Escritorio/ACTH/acth_md/umap/figures_ACTH/UMAP suple/", pattern = "png")
+display(readImage(net_name2, "PNG"), method="browser")
+```
+
