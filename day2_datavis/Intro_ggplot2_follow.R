@@ -21,7 +21,7 @@ library(Hmisc)
 setwd('~/g/projects/DataVis/JulieClass2022/')
 
 #read in dataset
-city_df <- read.csv('city_df.csv')
+city_df <- read.csv('data/city_df.csv')
 
 #look at structure 
 str(city_df)

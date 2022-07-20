@@ -71,7 +71,7 @@ Formating your data for figures or analysis is critical. The two formats are kno
 **WIDE**  
 
 ```{r eval=TRUE, echo=FALSE,include=TRUE,warning=FALSE,error=FALSE,message=FALSE}
-wide_df <- read.csv('sp_comp_wide.csv')
+wide_df <- read.csv('data/sp_comp_wide.csv')
 
 print(paste0('Wide dimensions: rows = ',nrow(wide_df),' ,cols = ',ncol(wide_df)))
 wide_df[1:5,1:10]
@@ -79,7 +79,7 @@ wide_df[1:5,1:10]
 **WIDE**  
 
 ```{r eval=TRUE, echo=FALSE,include=TRUE,warning=FALSE,error=FALSE,message=FALSE}
-long_df <- read.csv('sp_comp_long.csv')
+long_df <- read.csv('data/sp_comp_long.csv')
 
 print(paste0('Long dimensions: rows = ',nrow(long_df),' ,cols = ',ncol(long_df)))
 long_df[1:10,]
@@ -115,13 +115,13 @@ library(ggsci)
 library(patchwork)
 library(Hmisc)
 
-setwd('~/g/projects/DataVis/JulieClass2022/')
+setwd('~/g/parchman/GAIN/GAIN_summer2022/day2_datavis/') #set PATH to own working directory
 ```
 
 Read in the **city_df.csv** data frame and look at the structure  
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE}
-city_df <- read.csv('city_df.csv')
+city_df <- read.csv('data/city_df.csv')
 str(city_df)
 ```
 
