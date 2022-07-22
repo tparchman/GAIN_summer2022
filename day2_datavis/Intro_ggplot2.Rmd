@@ -6,11 +6,11 @@ output:
 
 ```{r, echo=FALSE}
 library(knitr)
-opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=FALSE)
 ```
 ---
 title: "Introduction to ggplot2"
-author: "Trevor Faske, modified: 07/21/2022"
+author: "Trevor Faske, modified: 07/22/2022"
 output: pdf_document
 ---
 
@@ -168,8 +168,8 @@ ggplot also work with *layers*, meaning it will build on itself in a layered/seq
 
 #### basic scatter plot  
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
-ggplot(data=city_df,aes(x=Time,y=Growth)) + 
-geom_point()
+ggplot(data=city_df,aes(x=Time,y=Growth)) +   
+  geom_point()
 ```
 
 **scatter plot but lets add colors for each state**  
@@ -179,8 +179,8 @@ ggplot is really smart, if you tell it the right things. It will automatically g
 We will do this in the aes() in the top layer so it stays throughout the rest of the figure. Notice how it sorts alphabetically because of the factor    
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
-ggplot(data=city_df,aes(x=Time,y=Growth,color=State)) + 
-geom_point()
+ggplot(data=city_df,aes(x=Time,y=Growth,color=State)) +   
+  geom_point()
 ```
 
 #### add line for each state  
@@ -188,9 +188,9 @@ geom_point()
 ggplot already knows we want to group based on state because we said so in the top layer, so we just add a line  
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
-ggplot(data=city_df,aes(x=Time,y=Growth,color=State)) + 
-geom_point() + 
-geom_line()
+ggplot(data=city_df,aes(x=Time,y=Growth,color=State)) +   
+  geom_point() +   
+  geom_line()
 ```
 
 #### add a trend line instead of a line between each point     
@@ -202,9 +202,9 @@ stat_smooth common options:
 Google for the rest of the options  
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
-ggplot(data=city_df,aes(x=Time,y=Growth,colour=State)) + 
-geom_point() + 
-stat_smooth()
+ggplot(data=city_df,aes(x=Time,y=Growth,colour=State)) +   
+  geom_point() +   
+  stat_smooth()
 ```
 
 #### Let's get a trend line for the entire model, instead of each state BUT keep state colours.   
@@ -214,9 +214,9 @@ stat_smooth()
 We can do this by confining the colour aesthetic within geom_point()  
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
-ggplot(data=city_df,aes(x=Time,y=Growth)) +   
-geom_point(aes(colour=State)) +   
-stat_smooth()
+ggplot(data=city_df,aes(x=Time,y=Growth)) +     
+  geom_point(aes(colour=State)) +     
+  stat_smooth()
 ```
 
 #### Change the size and colour and linetype of things independently to make things look a little nicer    
@@ -224,9 +224,9 @@ stat_smooth()
 Remember, ordering matters. Sometimes it might be nice for lines to be behind points, that is up to you.  
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
-ggplot(data=city_df,aes(x=Time,y=Growth)) + 
-geom_point(aes(colour=State),size=4) + 
-stat_smooth(linetype='dashed',colour='black',size=2)
+ggplot(data=city_df,aes(x=Time,y=Growth)) +   
+  geom_point(aes(colour=State),size=4) +   
+  stat_smooth(linetype='dashed',colour='black',size=2)  
 ```
 
 #### Add a shape for population Size   
@@ -234,9 +234,9 @@ stat_smooth(linetype='dashed',colour='black',size=2)
 It automatically picks shapes for you based off factors and puts it in the legend.    
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
-ggplot(data=city_df,aes(x=Time,y=Growth)) + 
-geom_point(aes(colour=State,shape=Size),size=4) + 
-stat_smooth(linetype='dashed',colour='black',size=2)
+ggplot(data=city_df,aes(x=Time,y=Growth)) +   
+  geom_point(aes(colour=State,shape=Size),size=4) +   
+  stat_smooth(linetype='dashed',colour='black',size=2)  
 ```
 
 #### repurposing code for similiar figures  
@@ -251,23 +251,23 @@ Lets make figures for:
 Let's also pick a linear trend line over a curved loess
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 #lat vs Ppt
-ggplot(data=city_df,aes(x=Lat,y=Ppt)) + 
-geom_point(aes(colour=State,shape=Size),size=4) + 
-stat_smooth(method='lm',linetype='dashed',colour='black',size=2)
+ggplot(data=city_df,aes(x=Lat,y=Ppt)) +   
+  geom_point(aes(colour=State,shape=Size),size=4) +   
+  stat_smooth(method='lm',linetype='dashed',colour='black',size=2)  
 ```
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 #lat vs Temp
-ggplot(data=city_df,aes(x=Lat,y=Temp)) + 
-geom_point(aes(colour=State,shape=Size),size=4) + 
-stat_smooth(method='lm',linetype='dashed',colour='black',size=2)
+ggplot(data=city_df,aes(x=Lat,y=Temp)) +   
+  geom_point(aes(colour=State,shape=Size),size=4) +   
+  stat_smooth(method='lm',linetype='dashed',colour='black',size=2)  
 ```
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 #Temp vs Ppt
-ggplot(data=city_df,aes(x=Temp,y=Ppt)) + 
-geom_point(aes(colour=State,shape=Size),size=4) + 
-stat_smooth(method='lm',linetype='dashed',colour='black',size=2)
+ggplot(data=city_df,aes(x=Temp,y=Ppt)) +   
+  geom_point(aes(colour=State,shape=Size),size=4) +   
+  stat_smooth(method='lm',linetype='dashed',colour='black',size=2)
 ```
 
 
@@ -347,14 +347,14 @@ We much identify the stat with in geom_bar to be 'identity' as the default is to
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_sum_df,aes(x=State,y=mean)) +
-geom_bar(stat='identity') 
+  geom_bar(stat='identity') 
 ```
 
 #### but wait, we have both Temp and Ppt in there. Lets colour them differently with 'fill'   
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_sum_df,aes(x=State,y=mean,fill=Clim)) +
-geom_bar(stat='identity')
+  geom_bar(stat='identity')
 ```
 
 #### That also didnt work. We need to tell ggplot exactly where we want them to be   
@@ -363,7 +363,7 @@ We will do this with *position()*
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_sum_df,aes(x=State,y=mean,fill=Clim)) +
-geom_bar(stat='identity',position='dodge')
+  geom_bar(stat='identity',position='dodge')
 ```
 #### Let's use *facet_wrap()* instead to get a better look at the comparisons among states   
 
@@ -374,8 +374,8 @@ geom_bar(stat='identity',position='dodge')
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_sum_df,aes(x=State,y=mean,fill=Clim)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') + 
-geom_bar(stat='identity')
+  facet_wrap(~Clim,nrow=1,scales = 'free') + 
+  geom_bar(stat='identity')
 ```
 
 #### Add errorbars manually   
@@ -384,18 +384,18 @@ What would we want errorbars to be to effectively show differences? (sd, se, or 
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_sum_df,aes(x=State,y=mean,fill=Clim)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') + 
-geom_bar(stat='identity') +
-geom_errorbar(aes(ymin = mean - ci, ymax = mean + ci))
+  facet_wrap(~Clim,nrow=1,scales = 'free') + 
+  geom_bar(stat='identity') +
+  geom_errorbar(aes(ymin = mean - ci, ymax = mean + ci))
 ```
 
 #### Use points instead of bars  
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_sum_df,aes(x=State,y=mean,colour=Clim)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') + 
-geom_point(size=5) + 
-geom_errorbar(aes(ymin = mean - ci, ymax = mean + ci),colour='black')
+  facet_wrap(~Clim,nrow=1,scales = 'free') + 
+  geom_point(size=5) + 
+  geom_errorbar(aes(ymin = mean - ci, ymax = mean + ci),colour='black')
 ```
 
 ### That is a henious way to summarize the data  
@@ -416,18 +416,18 @@ There's many different fun or fun.data in stat_summary(). Here we are using mean
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_long_df,aes(x=State,y=value,fill=Clim)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') +
-stat_summary(fun = mean, geom = "bar") +
-stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black')
+  facet_wrap(~Clim,nrow=1,scales = 'free') +
+  stat_summary(fun = mean, geom = "bar") +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black')
 ```
 
 #### make the exact point and error plot with *stat_summary()*    
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_long_df,aes(x=State,y=value,colour=Clim)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') +
-stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black') + 
-stat_summary(fun = mean, geom = "point",size=5) 
+  facet_wrap(~Clim,nrow=1,scales = 'free') +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black') + 
+  stat_summary(fun = mean, geom = "point",size=5) 
 ```
 
 ### Showing the full data  
@@ -463,28 +463,35 @@ bar_mean_mislead <- ggplot(data=mislead_df,aes(x=Group,y=Temp,fill=Group)) +
   scale_fill_npg(name='Group:') + 
   xlab('Group') + ylab('Temperature') + 
   theme_bw() + theme(legend.position = 'none', 
-                     plot.title = element_text(size = 22, colour="black",face = "bold"),
+                     plot.title = element_text(size = 22, 
+                                               colour="black",face = "bold"),
                      axis.text = element_text(size=16),
                      #axis.text.x = element_text(size = 20, colour="black"),
-                     axis.title = element_text(size = 20, colour="black",face = "bold"),
+                     axis.title = element_text(size = 20, 
+                                               colour="black",face = "bold"),
                      panel.border = element_rect(size = 1.5, colour = "black"),
-                     legend.title = element_text(size = 20, colour="black",face = "bold"),
+                     legend.title = element_text(size = 20, 
+                                                 colour="black",face = "bold"),
                      legend.text = element_text(size=18),
                      panel.grid.major = element_blank(),
                      panel.grid.minor = element_blank())
 
 point_mean_mislead <- ggplot(data=mislead_df,aes(x=Group,y=Temp,fill=Group_name)) +
-  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black',width = .7,size=1.4) + 
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               color='black',width = .7,size=1.4) + 
   stat_summary(fun = mean, geom = "point",colour='black',pch=21,size=9) +
   scale_fill_npg(name='Group:') + 
   xlab('Group') + ylab('Temperature') + 
   theme_bw() + theme(legend.position = 'none', 
-                     plot.title = element_text(size = 22, colour="black",face = "bold"),
+                     plot.title = element_text(size = 22, 
+                                               colour="black",face = "bold"),
                      axis.text = element_text(size=16),
                      #axis.text.x = element_text(size = 20, colour="black"),
-                     axis.title = element_text(size = 20, colour="black",face = "bold"),
+                     axis.title = element_text(size = 20, 
+                                               colour="black",face = "bold"),
                      panel.border = element_rect(size = 1.5, colour = "black"),
-                     legend.title = element_text(size = 20, colour="black",face = "bold"),
+                     legend.title = element_text(size = 20, 
+                                                 colour="black",face = "bold"),
                      legend.text = element_text(size=18),
                      panel.grid.major = element_blank(),
                      panel.grid.minor = element_blank())
@@ -494,9 +501,11 @@ full_mislead <- ggplot(data=mislead_df,aes(x=Group,y=Temp,fill=Group_name)) +
   scale_fill_npg(name='Group:') + 
   xlab('Group') + ylab('Temperature') + 
   theme_bw() + theme(#legend.position = 'none', 
-                     plot.title = element_text(size = 22, colour="black",face = "bold"),
+                     plot.title = element_text(size = 22, 
+                                               colour="black",face = "bold"),
                      axis.text = element_text(size=16),
-                     axis.title = element_text(size = 20, colour="black",face = "bold"),
+                     axis.title = element_text(size = 20, 
+                                               colour="black",face = "bold"),
                      panel.border = element_rect(size = 1.5, colour = "black"),
                      legend.title = element_blank(),
                      legend.text = element_text(size=22),
@@ -514,16 +523,16 @@ bar_mean_mislead + point_mean_mislead + full_mislead
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_long_df,aes(x=State,y=value,fill=Clim)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') +
-geom_boxplot()
+  facet_wrap(~Clim,nrow=1,scales = 'free') +
+  geom_boxplot()
 ```
 
 **make violin plot**    
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=4,fig.height=4}
 ggplot(data=city_long_df,aes(x=State,y=value,fill=Clim)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') +
-geom_violin(draw_quantiles = 0.5)
+  facet_wrap(~Clim,nrow=1,scales = 'free') +
+  geom_violin(draw_quantiles = 0.5)
 ```
 
 ### Now let's show the raw data with points and mean and confidence interval   
@@ -531,10 +540,10 @@ geom_violin(draw_quantiles = 0.5)
 Just layer points then summary stats   
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=4,fig.height=4}
 ggplot(data=city_long_df,aes(x=State,y=value,colour=Clim)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') +
-geom_point(size=4) +
-stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black') + 
-stat_summary(fun = mean, geom = "point",size=5,colour='black') 
+  facet_wrap(~Clim,nrow=1,scales = 'free') +
+  geom_point(size=4) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black') + 
+  stat_summary(fun = mean, geom = "point",size=5,colour='black') 
 ```
 
 #### same figure but little bit nicer  
@@ -543,10 +552,10 @@ Use geom_sina() in library(ggforce) for a violin plot style shape for raw ponts.
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=4,fig.height=4}
 ggplot(data=city_long_df,aes(x=State,y=value,colour=Clim)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') +
-geom_sina(size=3) +
-stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black') + 
-stat_summary(fun = mean, geom = "point",size=5,colour='black') 
+  facet_wrap(~Clim,nrow=1,scales = 'free') +
+  geom_sina(size=3) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black') + 
+  stat_summary(fun = mean, geom = "point",size=5,colour='black') 
 ```
 
 ## Customizing your figure to look nicer (aka tell a better story)  
@@ -583,18 +592,18 @@ levels(city_df$State_name)
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_df,aes(x=Temp,y=Ppt)) + 
-geom_point(aes(colour=State_name),size=4) + 
-stat_smooth(method='lm',linetype='dashed',colour='black',size=2)
+  geom_point(aes(colour=State_name),size=4) + 
+  stat_smooth(method='lm',linetype='dashed',colour='black',size=2)
 ```
 
 #### use xlab(), ylab(), and ggtitle() to change labels and title  
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_df,aes(x=Temp,y=Ppt)) + 
-geom_point(aes(colour=State_name),size=4) + 
-stat_smooth(method='lm',linetype='dashed',colour='black',size=2) + 
-xlab('Temperature') + ylab('Precipitation') + 
-ggtitle('Temp vs. Precip. by State')
+  geom_point(aes(colour=State_name),size=4) + 
+  stat_smooth(method='lm',linetype='dashed',colour='black',size=2) + 
+  xlab('Temperature') + ylab('Precipitation') + 
+  ggtitle('Temp vs. Precip. by State')
 ```
 
 #### colour vs. fill
@@ -609,10 +618,10 @@ Point styles are changed using *pch*, see shapes here (http://www.sthda.com/engl
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_df,aes(x=Temp,y=Ppt)) + 
-geom_point(aes(fill=State_name),size=4,pch=21,colour='black') + 
-stat_smooth(method='lm',linetype='dashed',colour='black',size=2) + 
-xlab('Temperature') + ylab('Precipitation') + 
-ggtitle('Temp vs. Precip. by State')
+  geom_point(aes(fill=State_name),size=4,pch=21,colour='black') + 
+  stat_smooth(method='lm',linetype='dashed',colour='black',size=2) + 
+  xlab('Temperature') + ylab('Precipitation') + 
+  ggtitle('Temp vs. Precip. by State')
 ```
 
 ## Scale: can be used to set colours, fill, shape, legends, axis limits, etc.   
@@ -661,13 +670,16 @@ This isn't a great looking figure but just showing what you can do with scale
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_df,aes(x=Temp,y=Ppt)) + 
-geom_point(aes(fill=State_name,shape=State_name),size=4,colour='black') + 
-stat_smooth(method='lm',linetype='dashed',colour='black',size=2) + 
-ggtitle('Temp vs. Precip. by State') + 
-scale_fill_manual(name='State:',values=c('red','blue','yellow','green','grey70')) + 
-scale_shape_manual(name='State:',values=c(21,22,23,24,25)) + 
-scale_x_continuous(name='Temperature',limits=c(5,25),breaks=c(5,10,15,20,25),position = 'top') + 
-scale_y_continuous(name='Precipitation',limits=c(0,1500),breaks=c(0,250,500,1000,1250,1500)) 
+  geom_point(aes(fill=State_name,shape=State_name),size=4,colour='black') + 
+  stat_smooth(method='lm',linetype='dashed',colour='black',size=2) + 
+  ggtitle('Temp vs. Precip. by State') + 
+  scale_fill_manual(name='State:',
+                    values=c('red','blue','yellow','green','grey70')) +
+  scale_shape_manual(name='State:',values=c(21,22,23,24,25)) +
+  scale_x_continuous(name='Temperature',limits=c(5,25),
+                     breaks=c(5,10,15,20,25),position = 'top') +
+  scale_y_continuous(name='Precipitation',limits=c(0,1500),
+                     breaks=c(0,250,500,1000,1250,1500)) 
 ```
 
 ## Theme: changing figure layout  
@@ -685,28 +697,34 @@ just two are:
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_df,aes(x=Temp,y=Ppt)) + 
-geom_point(aes(fill=State_name,shape=State_name),size=4,colour='black') + 
-stat_smooth(method='lm',linetype='dashed',colour='black',size=2) + 
-ggtitle('Temp vs. Precip. by State') + 
-scale_fill_manual(name='State:',values=c('red','blue','yellow','green','grey70')) + 
-scale_shape_manual(name='State:',values=c(21,22,23,24,25)) + 
-scale_x_continuous(name='Temperature',limits=c(5,25),breaks=c(5,10,15,20,25)) + 
-scale_y_continuous(name='Precipitation',limits=c(0,1500),breaks=c(0,250,500,1000,1250,1500)) + 
-theme_bw()
+  geom_point(aes(fill=State_name,shape=State_name),size=4,colour='black') + 
+  stat_smooth(method='lm',linetype='dashed',colour='black',size=2) + 
+  ggtitle('Temp vs. Precip. by State') + 
+  scale_fill_manual(name='State:',
+                    values=c('red','blue','yellow','green','grey70')) + 
+  scale_shape_manual(name='State:',values=c(21,22,23,24,25)) + 
+  scale_x_continuous(name='Temperature',limits=c(5,25),
+                     breaks=c(5,10,15,20,25)) + 
+  scale_y_continuous(name='Precipitation',limits=c(0,1500),
+                     breaks=c(0,250,500,1000,1250,1500)) + 
+  theme_bw()
 ```
 
 **theme_classic()** 
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 ggplot(data=city_df,aes(x=Temp,y=Ppt)) + 
-geom_point(aes(fill=State_name,shape=State_name),size=4,colour='black') + 
-stat_smooth(method='lm',linetype='dashed',colour='black',size=2) + 
-ggtitle('Temp vs. Precip. by State') + 
-scale_fill_manual(name='State:',values=c('red','blue','yellow','green','grey70')) + 
-scale_shape_manual(name='State:',values=c(21,22,23,24,25)) + 
-scale_x_continuous(name='Temperature',limits=c(5,25),breaks=c(5,10,15,20,25)) + 
-scale_y_continuous(name='Precipitation',limits=c(0,1500),breaks=c(0,250,500,1000,1250,1500)) + 
-theme_classic()
+  geom_point(aes(fill=State_name,shape=State_name),size=4,colour='black') + 
+  stat_smooth(method='lm',linetype='dashed',colour='black',size=2) + 
+  ggtitle('Temp vs. Precip. by State') + 
+  scale_fill_manual(name='State:',
+                    values=c('red','blue','yellow','green','grey70')) + 
+  scale_shape_manual(name='State:',values=c(21,22,23,24,25)) + 
+  scale_x_continuous(name='Temperature',limits=c(5,25),
+                     breaks=c(5,10,15,20,25)) +
+  scale_y_continuous(name='Precipitation',limits=c(0,1500),
+                     breaks=c(0,250,500,1000,1250,1500)) + 
+  theme_classic()
 ```
 
 ## More theme settings  
@@ -756,14 +774,16 @@ ggplot(data=city_df,aes(x=Temp,y=Ppt)) +
   scale_fill_npg(name='State:') + 
   scale_shape_manual(name='State:',values=c(21,22,23,24,25)) + 
   scale_x_continuous(name='Temperature') +
-  scale_y_continuous(name='Precipitation',limits=c(0,1500),breaks=c(0,250,500,750,1000,1250,1500)) + 
+  scale_y_continuous(name='Precipitation',limits=c(0,1500),
+                     breaks=c(0,250,500,750,1000,1250,1500)) + 
   theme_bw() + 
   theme(legend.position = 'bottom', 
         plot.title = element_text(size = 20, colour="black",face = "bold"),
         axis.text = element_text(size=13),
         axis.title = element_text(size = 16, colour="black",face = "bold"),
         panel.border = element_rect(size = 1.5, colour = "black"),
-        legend.title = element_text(size = 16, colour="black",face = "bold",vjust = 1),
+        legend.title = element_text(size = 16,
+                                    colour="black",face = "bold",vjust = 1),
         legend.text = element_text(size=13),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())
@@ -781,44 +801,44 @@ Another great function is *ggarrange()* in the package *ggpubr*, more customizab
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 worst_plot <- ggplot(data=city_sum_df,aes(x=State,y=mean,fill=Clim)) +
-geom_bar(stat='identity',position='dodge') + 
-ggtitle('Worst') + 
-theme(title = element_text(size = 20, colour="black",face = "bold"))
+  geom_bar(stat='identity',position='dodge') + 
+  ggtitle('Worst') + 
+  theme(title = element_text(size = 20, colour="black",face = "bold"))
 worst_plot
 ```
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 very_bad_plot <- ggplot(data=city_long_df,aes(x=State,y=value,fill=State)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') +
-stat_summary(fun = mean, geom = "bar") +
-stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black') + 
-scale_fill_npg() + 
-ggtitle('Very bad') + 
-theme(legend.position='none',
-    title = element_text(size = 20, colour="black",face = "bold"))
+  facet_wrap(~Clim,nrow=1,scales = 'free') +
+  stat_summary(fun = mean, geom = "bar") +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black') + 
+  scale_fill_npg() + 
+  ggtitle('Very bad') + 
+  theme(legend.position='none',
+        title = element_text(size = 20, colour="black",face = "bold"))
 very_bad_plot
 ```
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 bad_plot <- ggplot(data=city_long_df,aes(x=State,y=value,fill=State)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') +
-geom_boxplot() + 
-scale_fill_npg() + 
-ggtitle('eh, bad') + 
-theme(legend.position='none',
+  facet_wrap(~Clim,nrow=1,scales = 'free') +
+  geom_boxplot() + 
+  scale_fill_npg() + 
+  ggtitle('eh, bad') + 
+  theme(legend.position='none',
     title = element_text(size = 20, colour="black",face = "bold"))
 bad_plot
 ```
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 okay_plot <- ggplot(data=city_long_df,aes(x=State,y=value,fill=State)) +
-facet_wrap(~Clim,nrow=1,scales = 'free') +
-geom_sina(size=4,pch=21) +
-stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black') + 
-stat_summary(fun = mean, geom = "point",size=5,colour='black') +
-ggtitle('Okay') + 
-theme(legend.position='none',
-    title = element_text(size = 20, colour="black",face = "bold"))
+  facet_wrap(~Clim,nrow=1,scales = 'free') +
+  geom_sina(size=4,pch=21) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black') + 
+  stat_summary(fun = mean, geom = "point",size=5,colour='black') +
+  ggtitle('Okay') + 
+  theme(legend.position='none',
+        title = element_text(size = 20, colour="black",face = "bold"))
 okay_plot
 ```
 
@@ -832,24 +852,29 @@ worst_plot + very_bad_plot + bad_plot + okay_plot + plot_layout(ncol=2,nrow=2)
 
 ```{r eval=TRUE, echo=TRUE,warning=FALSE,error=FALSE,message=FALSE,fig.width=5,fig.height=4}
 better_plot <- ggplot(data=city_long_df,aes(x=State,y=value,fill=State)) +
-facet_wrap(~factor(Clim,labels=c('Precipitation','Temperature')),nrow=1,scales = 'free') +
-geom_sina(size=4,pch=21) +
-stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black',width = 0.3,size=1.4) + 
-stat_summary(fun = mean, geom = "point",size=7,colour='black',pch=22,fill='white') +
-scale_fill_npg() + 
-ggtitle('Better') + 
-theme_bw() +
-theme(legend.position = 'None', 
-    plot.title = element_text(size = 26, colour="black",face = "bold"),
-    axis.text = element_text(size=18),
-    axis.title = element_text(size = 22, colour="black",face = "bold"),
-    panel.border = element_rect(size = 1.5, colour = "black"),
-    legend.title = element_text(size = 22, colour="black",face = "bold",vjust = 1),
-    legend.text = element_text(size=18),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    strip.text.x = element_text(size=22, face="bold"),
-    strip.background = element_rect(size=1.5,colour="#333333",fill="#CCCCCC"))
+  facet_wrap(~factor(Clim,labels=c('Precipitation','Temperature')),
+             nrow=1,scales = 'free') +
+  geom_sina(size=4,pch=21) +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               color='black',width = 0.3,size=1.4) + 
+  stat_summary(fun = mean, geom = "point",size=7,
+               colour='black',pch=22,fill='white') +
+  scale_fill_npg() + 
+  ggtitle('Better') + 
+  theme_bw() +
+  theme(legend.position = 'None', 
+        plot.title = element_text(size = 26, colour="black",face = "bold"),
+        axis.text = element_text(size=18),
+        axis.title = element_text(size = 22, colour="black",face = "bold"),
+        panel.border = element_rect(size = 1.5, colour = "black"),
+        legend.title = element_text(size = 22, colour="black",
+                                    face = "bold",vjust = 1),
+        legend.text = element_text(size=18),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text.x = element_text(size=22, face="bold"),
+        strip.background = element_rect(size=1.5,
+                                        colour="#333333",fill="#CCCCCC"))
 better_plot
 ```
 
@@ -863,42 +888,49 @@ okay_plot + better_plot
 #### TEMP ####
 temp_df <- city_long_df[which(city_long_df$Clim == 'Temp'),]
 temp_plot <- ggplot(data=temp_df,aes(x=State,y=value,fill=State)) +
-geom_sina(size=6,pch=21,colour='black') +
-stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black',width = 0.3,size=1.4) + 
-stat_summary(fun = mean, geom = "point",size=9,colour='black',pch=22,fill='white') +
-scale_fill_npg() + 
-ylab('Temperature') + 
-theme_bw() +
-theme(legend.position = 'None', 
-    plot.title = element_text(size = 26, colour="black",face = "bold"),
-    axis.text = element_text(size=18),
-    axis.title = element_text(size = 22, colour="black",face = "bold"),
-    axis.title.x = element_blank(),
-    panel.border = element_rect(size = 1.5, colour = "black"),
-    legend.title = element_text(size = 22, colour="black",face = "bold",vjust = 1),
-    legend.text = element_text(size=18),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank())
+  geom_sina(size=6,pch=21,colour='black') +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               color='black',width = 0.3,size=1.4) + 
+  stat_summary(fun = mean, geom = "point",size=9,
+               colour='black',pch=22,fill='white') +
+  scale_fill_npg() + 
+  ylab('Temperature') + 
+  theme_bw() +
+  theme(legend.position = 'None', 
+        plot.title = element_text(size = 26, colour="black",face = "bold"),
+        axis.text = element_text(size=18),
+        axis.title = element_text(size = 22, colour="black",face = "bold"),
+        axis.title.x = element_blank(),
+        panel.border = element_rect(size = 1.5, colour = "black"),
+        legend.title = element_text(size = 22, colour="black",
+                                    face = "bold",vjust = 1),
+        legend.text = element_text(size=18),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
 
 #### PPT ####
 ppt_df <- city_long_df[which(city_long_df$Clim == 'Ppt'),]
 ppt_plot <- ggplot(data=ppt_df,aes(x=State,y=value,fill=State)) +
-geom_sina(size=6,pch=21,colour='black') +
-stat_summary(fun.data = mean_cl_boot, geom = "errorbar",color='black',width = 0.3,size=1.4) + 
-stat_summary(fun = mean, geom = "point",size=9,colour='black',pch=22,fill='white') +
-scale_fill_npg() + 
-scale_y_continuous(name='Precipitation',position='right',breaks=c(250,500,750,1000,12)) + 
-theme_bw() +
-theme(legend.position = 'None', 
-    plot.title = element_text(size = 26, colour="black",face = "bold"),
-    axis.text = element_text(size=18),
-    axis.title = element_text(size = 22, colour="black",face = "bold"),
-    axis.title.x = element_blank(),
-    panel.border = element_rect(size = 1.5, colour = "black"),
-    legend.title = element_text(size = 22, colour="black",face = "bold",vjust = 1),
-    legend.text = element_text(size=18),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank())
+  geom_sina(size=6,pch=21,colour='black') +
+  stat_summary(fun.data = mean_cl_boot, geom = "errorbar",
+               color='black',width = 0.3,size=1.4) + 
+  stat_summary(fun = mean, geom = "point",size=9,
+               colour='black',pch=22,fill='white') +
+  scale_fill_npg() + 
+  scale_y_continuous(name='Precipitation',position='right',
+                     breaks=c(250,500,750,1000,12)) +
+  theme_bw() +
+  theme(legend.position = 'None', 
+        plot.title = element_text(size = 26, colour="black",face = "bold"),
+        axis.text = element_text(size=18),
+        axis.title = element_text(size = 22, colour="black",face = "bold"),
+        axis.title.x = element_blank(),
+        panel.border = element_rect(size = 1.5, colour = "black"),
+        legend.title = element_text(size = 22, colour="black",
+                                    face = "bold",vjust = 1),
+        legend.text = element_text(size=18),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
 
 #combine
 bestest_plot <- temp_plot + ppt_plot
