@@ -1,0 +1,29 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+
+---
+title: "Some markdown syntax"
+author: "TL Parchman"
+output: html_document
+---
+
+# Header 1
+## Header 2
+### Header 3
+
+ **Bold Text** 
+ 
+ *Italics*
+ 
+ ### List
+ 
+ * item1
+ * item2
+ * item3
+ 
+ ```{r}
+ #Code Chunk
+ ```
