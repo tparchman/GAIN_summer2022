@@ -5,7 +5,7 @@ output:
 ---
 
 ---
-title: "Some markdown syntax"
+title: "R markdown demo"
 author: "TL Parchman"
 output: html_document
 ---
@@ -27,3 +27,7 @@ output: html_document
  ```{r}
  #Code Chunk
  ```
+ 
+ ```{python}
+print("Hello Python!")
+```
