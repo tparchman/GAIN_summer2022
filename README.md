@@ -70,7 +70,7 @@ git clone https://github.com/tparchman/GAIN_summer2022
 | --------- | ---------------| -------------| 
 | Aug. 1  | R markdown    | Tutorial  | 
 | Aug. 2  |	Data Visualization | ggplot2 R tutorial |
-| Aug. 4  |	HPC | Discussion |
+| Aug. 4  |	HPC | Lecture, demo, discussion |
 | Aug. 5  |	Life outside of Academia   | Questions for Dr. Johan Grahnen |
 | --------- | ---------------| --------------------------------| 
 |
