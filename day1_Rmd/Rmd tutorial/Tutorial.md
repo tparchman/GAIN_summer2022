@@ -66,7 +66,7 @@ It is considered a symbol of these Mountains. It is a species that, although it 
 Copy the following text and Knit again to see the results:
 
 ```{r eval=FALSE}
- # Plantago nivalis
+# Plantago nivalis
 ####  The snow star
 
 The snow star or Plantago nivalis is a non-endangered endemic plant of Sierra Nevada (Spain), which grows exclusively above 3,000 m. 
