@@ -8,7 +8,7 @@
 #install packages
 #install.packages(c('tidyverse','ggforce','ggsci','patchwork','Hmisc'))
 
-#import libraries
+#import librariess
 library(tidyverse)
 library(ggforce) 
 library(ggsci)
@@ -17,14 +17,18 @@ library(Hmisc)
 
 #set working directory
 #CHANGE TO YOURS
-#setwd('~/g/DataScience/Data_Science_For_Biology_II/Part.3_DataVisualization/1-ggplot')
-setwd('~/g/projects/DataVis/JulieClass2022/')
+setwd('~/g/parchman/GAIN/GAIN_summer2022/day2_datavis/')
 
 #read in dataset
 city_df <- read.csv('data/city_df.csv')
 
 #look at structure 
 str(city_df)
+
+# make characters as factor 
+city_df$State <- as.factor(city_df$State)
+city_df$City <- as.factor(city_df$City)
+city_df$Size <- as.factor(city_df$Size)
 
 #Understanding factors
 as.character(city_df$State)
