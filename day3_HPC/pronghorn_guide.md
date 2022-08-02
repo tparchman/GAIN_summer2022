@@ -1,5 +1,30 @@
 # General notes on pronghorn usage
 
+## Pronghorn specific resources
+
+Wiki: https://github.com/UNR-HPC/pronghorn/wiki  
+Slack: https://unrrc.slack.com/  (Admins are very active on Slack and prefer that for communication and resources)  
+Email: hpc@unr.edu 
+
+## Signing up for pronghorn 
+
+Fill out a form to request access to the Pronghorn server:  
+
+[Pronghorn High-Performance Computing Account Application Form](https://nevada.formstack.com/forms/high_performance_computing_application?sso=62e98474b1446)
+
+## Sign up for a Student Research Association (SRA)
+
+Students can recieve free compute time with the same permissions, priority, and resource allocation as the *Renter* status. Below lists how to sign up for an SRA and share it with others.
+
+**The SRA Creation Process:**  
+- Optionally, organize a group of student collaborators (or have one alone)
+- Ensure all users have a Pronghorn account by filling out the [Pronghorn High-Performance Computing Account Application Form](https://nevada.formstack.com/forms/high_performance_computing_application?sso=62e98474b1446)
+- Elect a Principal to apply for an SRA
+- Create an SRA by having the Principal fill out the [Student Research Service Association Creation Form](https://nevada.formstack.com/forms/student_research_service_association_creation?sso=62e9855cb0d45)
+- Your application will be reviewed by the HPC team, and SRA created
+- Once the SRA is functional, add student collaborators by filling out the Request Research Group Access Form
+- High-Performance Compute
+
 ## logging into pronghorn
 
 Connecting to pronghorn is most usefully accomplished using `ssh`:
