@@ -2,7 +2,7 @@
 
 ## logging into pronghorn
 
-Connecting to pronghorn is most usefully accomplished using ssh:
+Connecting to pronghorn is most usefully accomplished using `ssh`:
 
     $ ssh username@pronghorn.rc.unr.edu
 
@@ -32,14 +32,19 @@ Copy a file(s) from local machine to pronghorn
 
     $ scp data_from_curvirostra.vcf tparchman@pronghorn.rc.unr.edu:/data/gpfs/assoc/parchmanlab/parchman/
 
-Copy 
+Copy a directory from local device to pronghorn:
+
+    $ rsync -av muricata_fastqs tparchman@pronghorn.rc.unr.edu:/data/gpfs/assoc/parchmanlab/parchman/
+
+Copy a directory from pronghorn to local device:
+
     $ rsync -av muricata_fastqs tparchman@pronghorn.rc.unr.edu:/data/gpfs/assoc/parchmanlab/parchman/
 
 ## Containers or environments for managing software on pronghorn
 
 Pronghorn users do not have permissions to install and compile software at the system level, and due to the large number of users, the system engineers do not fill requests to install software for individual users. This responsibility is yours.Containers or environments can easily be used on pronghorn to install and run user specific software. Using such tools means that you can install the software you need to run, that you control your own portable environment, and that individual users do not have to install software more generally at the system. 
 
-In the parchman lab we have been using `anaconda` environments for this. Other options include `apptainer` containers, which are recommended by the pronghorn system engineering team.
+In the parchman lab we have been using `anaconda` environments for this. Other options include `Apptainer` containers, which are recommended by the pronghorn system engineering team.
 
 Detailed instructions for installing and using `Apptainer` containers can be found at this [Apptainer website](https://apptainer.org/docs/).
 
