@@ -140,6 +140,9 @@ city_sum_df <- rbind(Temp_sum_df,Ppt_sum_df)
 city_sum_df
 
 #### Catergorical graphs ####
+#histagram 
+ggplot(data=city_sum_df,aes(x=mean)) +
+  geom_bar() 
 
 #barchart 
 ggplot(data=city_sum_df,aes(x=State,y=mean)) +
