@@ -25,7 +25,7 @@ Students can recieve free compute time with the same permissions, priority, and 
 - Once the SRA is functional, add student collaborators by filling out the Request Research Group Access Form
 - High-Performance Compute
 
-## logging into pronghorn
+## Logging into pronghorn
 
 Connecting to pronghorn is most usefully accomplished using `ssh`:
 
@@ -104,7 +104,7 @@ To activate conda either logout/log back in or:
 
 NOTE: may need to modify .condarc in order to move conda-forge and bioconda to top of list
 
-### activating and deactivating environment
+### Activating and deactivating environment
 
 %need a few sentences describing [base], how to deactivate out of base, how to activate back into base, the difference between base and your environment.
 
@@ -120,7 +120,7 @@ To deactivate an active environment, use
 
 Note, if you deactivate after activating your named environment, you can deactivate out of base using the same command.
 
-### conda software installs
+### `conda` software installs
 
 Paragraph about considerations before choosing which version of what to install.
 
@@ -133,11 +133,11 @@ Below will install the most current version of bwa available from `bioconda`
     $ conda install -c bioconda bcftools=1.10
     $ conda install -c bioconda vcftools
 
-### conda software uninstalls
+### `conda` software uninstalls
 
     $ conda uninstall packagename
 
-## removing anaconda environment
+## Removing anaconda environment
 
     $ conda install anaconda-clean
     $ anaconda-clean --yes
@@ -179,7 +179,7 @@ Slurm is an open source, fault-tolerant, and highly scalable cluster management 
 * specify the commands to run, specifying input and output locations.
 
   
-*Example of Slurm resource allocation submission file.*
+*Example resource allocation at the top of a `slurm` submission file.*
 ```
 #!/usr/bin/env bash
 #SBATCH --account=cpu-s1-bionres-0
@@ -211,7 +211,7 @@ Common Slurm Commands
 
 
  
- ## running jobs through the queue on pronghorn using `slurm`
+ ## Running jobs through the queue on pronghorn using `slurm`
  
  ### different resources for parchman lab on pronghorn, both free and not so free
  
@@ -230,6 +230,6 @@ To kill job:
     $ scancel <JOBID>
 
  
- ### some things NOT to do on pronghorn (personal accounts of fuck-ups)
+ ### some things NOT to do on pronghorn (personal accounts of screw ups) TBA later.
 
 
