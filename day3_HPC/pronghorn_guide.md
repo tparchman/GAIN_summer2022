@@ -22,7 +22,7 @@ Students can recieve free compute time with the same permissions, priority, and 
 - Elect a Principal to apply for an SRA
 - Create an SRA by having the Principal fill out the [Student Research Service Association Creation Form](https://nevada.formstack.com/forms/student_research_service_association_creation?sso=62e9855cb0d45)
 - Your application will be reviewed by the HPC team, and SRA created
-- Once the SRA is functional, add student collaborators by filling out the Request Research Group Access Form
+- Once the SRA is functional, add student collaborators by filling out the [Request Research Group Access Form](https://nevada.formstack.com/forms/request_research_group_access?sso=5e9e213e71da9&sso=634e155f25c08)
 - High-Performance Compute
 
 ## Logging into pronghorn
